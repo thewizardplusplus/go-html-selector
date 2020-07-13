@@ -77,6 +77,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:ca901dc31bf65bcdf4ceb1b9b83292ea7b71bf9e4e22a807093900c737e1d960"
+  name = "golang.org/x/net"
+  packages = [
+    "html",
+    "html/atom",
+  ]
+  pruneopts = "UT"
+  revision = "ab34263943818b32f575efc978a3d24e80b04bd7"
+
+[[projects]]
+  branch = "master"
   digest = "1:c7de72105509e3b2a956c6228c8ff18f3fab95781b6bb4ab1908acb7f52ac365"
   name = "golang.org/x/tools"
   packages = [
@@ -127,6 +138,7 @@
   input-imports = [
     "github.com/alecthomas/gometalinter",
     "github.com/cweill/gotests/gotests",
+    "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
