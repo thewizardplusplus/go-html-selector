@@ -11,3 +11,9 @@ type Attribute struct {
 	Name  []byte
 	Value []byte
 }
+
+// Tag ...
+type Tag struct {
+	Name       []byte
+	Attributes []Attribute
+}
