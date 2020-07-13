@@ -1,6 +1,7 @@
 package htmlselector
 
 import (
+	"bytes"
 	"io"
 
 	"golang.org/x/net/html"
@@ -30,6 +31,23 @@ func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 	tokenizer := html.NewTokenizer(reader)
 	for {
 		switch tokenizer.Next() {
+		case html.StartTagToken, html.SelfClosingTagToken:
+			tagName, _ := tokenizer.TagName()
+			matchedFilterIndex := -1
+			for filterIndex, filter := range filters {
+				if bytes.Equal(filter.Tag, tagName) {
+					matchedFilterIndex = filterIndex
+					break
+				}
+			}
+			if matchedFilterIndex == -1 {
+				continue
+			}
+
+			tagNameCopy := make([]byte, len(tagName))
+			copy(tagNameCopy, tagName)
+
+			tags = append(tags, Tag{Name: tagNameCopy})
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return nil, err
