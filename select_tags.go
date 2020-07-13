@@ -32,7 +32,7 @@ func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			tagName, _ := tokenizer.TagName()
+			tagName, hasAttribute := tokenizer.TagName()
 			matchedFilterIndex := -1
 			for filterIndex, filter := range filters {
 				if bytes.Equal(filter.Tag, tagName) {
@@ -47,7 +47,32 @@ func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 			tagNameCopy := make([]byte, len(tagName))
 			copy(tagNameCopy, tagName)
 
-			tags = append(tags, Tag{Name: tagNameCopy})
+			var attributes []Attribute
+			for hasAttribute {
+				var attributeName, attributeValue []byte
+				var attributeMatched bool
+				attributeName, attributeValue, hasAttribute = tokenizer.TagAttr()
+				for _, attribute := range filters[matchedFilterIndex].Attributes {
+					if bytes.Equal(attribute, attributeName) {
+						attributeMatched = true
+						break
+					}
+				}
+				if !attributeMatched {
+					continue
+				}
+
+				attributeNameCopy := make([]byte, len(attributeName))
+				copy(attributeNameCopy, attributeName)
+
+				attributeValueCopy := make([]byte, len(attributeValue))
+				copy(attributeValueCopy, attributeValue)
+
+				attributes =
+					append(attributes, Attribute{attributeNameCopy, attributeValueCopy})
+			}
+
+			tags = append(tags, Tag{tagNameCopy, attributes})
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return nil, err
