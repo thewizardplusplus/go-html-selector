@@ -1,0 +1,8 @@
+required = [
+  "github.com/alecthomas/gometalinter",
+  "github.com/cweill/gotests/gotests",
+]
+
+[prune]
+  go-tests = true
+  unused-packages = true
