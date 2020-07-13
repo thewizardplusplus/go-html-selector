@@ -2,6 +2,8 @@ package htmlselector
 
 import (
 	"io"
+
+	"golang.org/x/net/html"
 )
 
 // Filter ...
@@ -25,5 +27,15 @@ type Tag struct {
 // SelectTags ...
 func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 	var tags []Tag
-	return tags, nil
+	tokenizer := html.NewTokenizer(reader)
+	for {
+		switch tokenizer.Next() {
+		case html.ErrorToken:
+			if err := tokenizer.Err(); err != io.EOF {
+				return nil, err
+			}
+
+			return tags, nil
+		}
+	}
 }
