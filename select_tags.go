@@ -44,9 +44,6 @@ func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 				continue
 			}
 
-			tagNameCopy := make([]byte, len(tagName))
-			copy(tagNameCopy, tagName)
-
 			var attributes []Attribute
 			for hasAttribute {
 				var attributeName, attributeValue []byte
@@ -62,17 +59,16 @@ func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
 					continue
 				}
 
-				attributeNameCopy := make([]byte, len(attributeName))
-				copy(attributeNameCopy, attributeName)
-
-				attributeValueCopy := make([]byte, len(attributeValue))
-				copy(attributeValueCopy, attributeValue)
-
-				attributes =
-					append(attributes, Attribute{attributeNameCopy, attributeValueCopy})
+				attributes = append(attributes, Attribute{
+					Name:  copyBytes(attributeName),
+					Value: copyBytes(attributeValue),
+				})
 			}
 
-			tags = append(tags, Tag{tagNameCopy, attributes})
+			tags = append(tags, Tag{
+				Name:       copyBytes(tagName),
+				Attributes: attributes,
+			})
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return nil, err
