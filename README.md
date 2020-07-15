@@ -99,6 +99,19 @@ func main() {
 }
 ```
 
+## Benchmarks
+
+`htmlselector.SelectTags()`:
+
+```
+BenchmarkDistance/10Tags/490.00B-8         	 2000000	       836 ns/op	    4304 B/op	       2 allocs/op
+BenchmarkDistance/100Tags/4.87KiB-8        	 2000000	       840 ns/op	    4304 B/op	       2 allocs/op
+BenchmarkDistance/1000Tags/50.58KiB-8      	 2000000	       829 ns/op	    4304 B/op	       2 allocs/op
+BenchmarkDistance/10000Tags/525.19KiB-8    	 2000000	       902 ns/op	    4305 B/op	       2 allocs/op
+BenchmarkDistance/100000Tags/5.32MiB-8     	 2000000	       855 ns/op	    4321 B/op	       2 allocs/op
+BenchmarkDistance/1000000Tags/55.10MiB-8   	  300000	      3505 ns/op	    5436 B/op	      15 allocs/op
+```
+
 ## License
 
 The MIT License (MIT)
