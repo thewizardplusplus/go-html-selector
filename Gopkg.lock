@@ -2,6 +2,13 @@
 
 
 [[projects]]
+  digest = "1:c5f3f73b4b9a2a086ff3fc72bb3dbe128e2304d8f0501efa057ae1ede0c03993"
+  name = "code.cloudfoundry.org/bytefmt"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cf55d5288a48262e16d2e628b6221dd2df67bcd1"
+
+[[projects]]
   digest = "1:9afc639ef88d907f2e87ab68cbc63117b88d0d84238fd6b08224515d00a8136a"
   name = "github.com/alecthomas/gometalinter"
   packages = ["."]
@@ -168,6 +175,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "code.cloudfoundry.org/bytefmt",
     "github.com/alecthomas/gometalinter",
     "github.com/cweill/gotests/gotests",
     "github.com/stretchr/testify/assert",
