@@ -101,7 +101,7 @@ func main() {
 
 ## Benchmarks
 
-`htmlselector.SelectTags()`:
+`htmlselector.SelectTags()` with a simple markup:
 
 ```
 BenchmarkDistance/simple_markup/10_tags/490B-8         	 2000000	       815 ns/op	    4304 B/op	       2 allocs/op
@@ -110,6 +110,17 @@ BenchmarkDistance/simple_markup/1000_tags/50.6K-8      	 2000000	       815 ns/o
 BenchmarkDistance/simple_markup/10000_tags/525.2K-8    	 2000000	       864 ns/op	    4305 B/op	       2 allocs/op
 BenchmarkDistance/simple_markup/100000_tags/5.3M-8     	 2000000	       829 ns/op	    4321 B/op	       2 allocs/op
 BenchmarkDistance/simple_markup/1000000_tags/55.1M-8   	  300000	      3517 ns/op	    5436 B/op	      15 allocs/op
+```
+
+`htmlselector.SelectTags()` with a complex markup:
+
+```
+BenchmarkDistance/complex_markup/10_tags/1020B-8       	 2000000	       867 ns/op	     4304 B/op	       2 allocs/op
+BenchmarkDistance/complex_markup/100_tags/10.4K-8      	 2000000	       841 ns/op	     4304 B/op	       2 allocs/op
+BenchmarkDistance/complex_markup/1000_tags/108.8K-8    	 2000000	       867 ns/op	     4304 B/op	       2 allocs/op
+BenchmarkDistance/complex_markup/10000_tags/1.1M-8     	 2000000	       933 ns/op	     4308 B/op	       2 allocs/op
+BenchmarkDistance/complex_markup/100000_tags/11.6M-8   	 2000000	       823 ns/op	     4349 B/op	       2 allocs/op
+BenchmarkDistance/complex_markup/1000000_tags/120.6M-8 	       1	2341073420 ns/op	881045200 B/op	14000048 allocs/op
 ```
 
 ## License

@@ -35,6 +35,27 @@ func BenchmarkDistance(benchmark *testing.B) {
 				filters: []Filter{{[]byte("a"), [][]byte{[]byte("href")}}},
 			},
 		},
+		{
+			name: "complex markup",
+			args: args{
+				makeMarkup: func(tagCount int) string {
+					var markupParts []string
+					for tagIndex := 0; tagIndex < tagCount; tagIndex++ {
+						markupParts = append(markupParts, fmt.Sprintf(
+							`<p><a href="http://example.com/%[1]d" title="%[1]d">%[1]d</a></p>`+
+								`<p><img src="http://example.com/%[1]d" alt="%[1]d" /></p>`,
+							tagIndex,
+						))
+					}
+
+					return strings.Join(markupParts, "")
+				},
+				filters: []Filter{
+					{[]byte("a"), [][]byte{[]byte("href"), []byte("title")}},
+					{[]byte("img"), [][]byte{[]byte("src"), []byte("alt")}},
+				},
+			},
+		},
 	} {
 		for tagCount := 10; tagCount <= 1e6; tagCount *= 10 {
 			markup := data.args.makeMarkup(tagCount)
