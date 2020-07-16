@@ -22,15 +22,15 @@ func BenchmarkDistance(benchmark *testing.B) {
 			name: "simple markup",
 			args: args{
 				makeMarkup: func(tagCount int) string {
-					var tags []string
-					for index := 0; index < tagCount; index++ {
-						tags = append(tags, fmt.Sprintf(
-							`  <li><a href="http://example.com/%[1]d">%[1]d</a></li>`,
-							index,
+					var markupParts []string
+					for tagIndex := 0; tagIndex < tagCount; tagIndex++ {
+						markupParts = append(markupParts, fmt.Sprintf(
+							`<p><a href="http://example.com/%[1]d">%[1]d</a></p>`,
+							tagIndex,
 						))
 					}
 
-					return fmt.Sprintf("<ul>\n%s\n</ul>", strings.Join(tags, "\n"))
+					return strings.Join(markupParts, "")
 				},
 				filters: []Filter{{[]byte("a"), [][]byte{[]byte("href")}}},
 			},
