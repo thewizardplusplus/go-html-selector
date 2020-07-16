@@ -8,7 +8,7 @@ import (
 	"code.cloudfoundry.org/bytefmt"
 )
 
-func BenchmarkDistance(benchmark *testing.B) {
+func BenchmarkSelectTags(benchmark *testing.B) {
 	type args struct {
 		makeMarkup func(tagCount int) string
 		filters    []Filter
