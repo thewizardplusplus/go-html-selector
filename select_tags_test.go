@@ -22,6 +22,15 @@ func TestSelectTags(test *testing.T) {
 		wantErr  assert.ErrorAssertionFunc
 	}{
 		{
+			name: "success/with empty arguments",
+			args: args{
+				reader:  strings.NewReader(""),
+				filters: nil,
+			},
+			wantTags: nil,
+			wantErr:  assert.NoError,
+		},
+		{
 			name: "success/with an empty reader",
 			args: args{
 				reader: strings.NewReader(""),
@@ -190,6 +199,140 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with missed tags",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="http://example.com/1">1</a></li>
+						<li><a href="http://example.com/2">2</a></li>
+					</ul>
+				`),
+				filters: []Filter{
+					{
+						Tag:        []byte("a"),
+						Attributes: [][]byte{[]byte("href")},
+					},
+					{
+						Tag:        []byte("img"),
+						Attributes: [][]byte{[]byte("src")},
+					},
+				},
+			},
+			wantTags: []Tag{
+				{
+					Name: []byte("a"),
+					Attributes: []Attribute{
+						{
+							Name:  []byte("href"),
+							Value: []byte("http://example.com/1"),
+						},
+					},
+				},
+				{
+					Name: []byte("a"),
+					Attributes: []Attribute{
+						{
+							Name:  []byte("href"),
+							Value: []byte("http://example.com/2"),
+						},
+					},
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/without attributes/by markup and filters",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><video></video></li>
+						<li><video></video></li>
+					</ul>
+				`),
+				filters: []Filter{
+					{
+						Tag: []byte("video"),
+					},
+				},
+			},
+			wantTags: []Tag{
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/without attributes/by markup",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><video></video></li>
+						<li><video></video></li>
+					</ul>
+				`),
+				filters: []Filter{
+					{
+						Tag:        []byte("video"),
+						Attributes: [][]byte{[]byte("src"), []byte("poster")},
+					},
+				},
+			},
+			wantTags: []Tag{
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/without attributes/by filters",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<video
+								src="http://example.com/1"
+								poster="http://example.com/1.1">
+							</video>
+						</li>
+						<li>
+							<video
+								src="http://example.com/2"
+								poster="http://example.com/2.1">
+							</video>
+						</li>
+					</ul>
+				`),
+				filters: []Filter{
+					{
+						Tag: []byte("video"),
+					},
+				},
+			},
+			wantTags: []Tag{
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+				{
+					Name:       []byte("video"),
+					Attributes: nil,
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "success/with few attributes",
 			args: args{
 				reader: strings.NewReader(`
@@ -239,6 +382,48 @@ func TestSelectTags(test *testing.T) {
 						{
 							Name:  []byte("poster"),
 							Value: []byte("http://example.com/2.1"),
+						},
+					},
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/with missed attributes",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<video src="http://example.com/1"></video>
+						</li>
+						<li>
+							<video src="http://example.com/2"></video>
+						</li>
+					</ul>
+				`),
+				filters: []Filter{
+					{
+						Tag:        []byte("video"),
+						Attributes: [][]byte{[]byte("src"), []byte("poster")},
+					},
+				},
+			},
+			wantTags: []Tag{
+				{
+					Name: []byte("video"),
+					Attributes: []Attribute{
+						{
+							Name:  []byte("src"),
+							Value: []byte("http://example.com/1"),
+						},
+					},
+				},
+				{
+					Name: []byte("video"),
+					Attributes: []Attribute{
+						{
+							Name:  []byte("src"),
+							Value: []byte("http://example.com/2"),
 						},
 					},
 				},
