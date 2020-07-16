@@ -5,6 +5,23 @@
 [![Build Status](https://travis-ci.org/thewizardplusplus/go-html-selector.svg?branch=master)](https://travis-ci.org/thewizardplusplus/go-html-selector)
 [![codecov](https://codecov.io/gh/thewizardplusplus/go-html-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/thewizardplusplus/go-html-selector)
 
+The library that implements collecting specified HTML tags and their attributes from an HTML document.
+
+## Features
+
+- collecting from an HTML document:
+  - HTML tags;
+  - HTML attributes;
+- options:
+  - filtering a result:
+    - by specified HTML tags;
+    - by specified HTML attributes;
+- representing a result:
+  - grouping HTML attributes by their tags;
+- optimizations by the number:
+  - of memory allocations;
+  - of string copies.
+
 ## Installation
 
 Prepare the directory:
