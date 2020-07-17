@@ -7,7 +7,7 @@ type TagName string
 type AttributeName string
 
 // OptimizedFilterGroup ...
-type OptimizedFilterGroup map[TagName]AttributeFilterGroup
+type OptimizedFilterGroup map[TagName]OptimizedAttributeFilterGroup
 
-// AttributeFilterGroup ...
-type AttributeFilterGroup map[AttributeName]struct{}
+// OptimizedAttributeFilterGroup ...
+type OptimizedAttributeFilterGroup map[AttributeName]struct{}
