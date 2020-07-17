@@ -12,7 +12,7 @@ import (
 func TestSelectTags(test *testing.T) {
 	type args struct {
 		reader  io.Reader
-		filters FilterGroup
+		filters OptimizedFilterGroup
 	}
 
 	for _, data := range []struct {
@@ -34,7 +34,7 @@ func TestSelectTags(test *testing.T) {
 			name: "success/with an empty reader",
 			args: args{
 				reader:  strings.NewReader(""),
-				filters: FilterGroup{"a": {"href": {}}},
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
 			},
 			wantTags: nil,
 			wantErr:  assert.NoError,
@@ -62,7 +62,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`),
-				filters: FilterGroup{"a": {"href": {}}},
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -95,7 +95,7 @@ func TestSelectTags(test *testing.T) {
 						<li><img src="http://example.com/2" /></li>
 					</ul>
 				`),
-				filters: FilterGroup{"img": {"src": {}}},
+				filters: OptimizedFilterGroup{"img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -132,7 +132,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: FilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -183,7 +183,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`),
-				filters: FilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -216,7 +216,7 @@ func TestSelectTags(test *testing.T) {
 						<li><video></video></li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": nil},
+				filters: OptimizedFilterGroup{"video": nil},
 			},
 			wantTags: []Tag{
 				{
@@ -239,7 +239,7 @@ func TestSelectTags(test *testing.T) {
 						<li><video></video></li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
+				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -272,7 +272,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": nil},
+				filters: OptimizedFilterGroup{"video": nil},
 			},
 			wantTags: []Tag{
 				{
@@ -305,7 +305,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
+				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -350,7 +350,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
+				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -387,7 +387,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: FilterGroup{"video": {"src": {}}},
+				filters: OptimizedFilterGroup{"video": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -420,7 +420,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`)),
-				filters: FilterGroup{"a": {"href": {}}},
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
 			},
 			wantTags: nil,
 			wantErr:  assert.Error,

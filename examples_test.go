@@ -28,7 +28,7 @@ func ExampleSelectTags() {
 		</ul>
 	`)
 
-	filters := htmlselector.FilterGroup{
+	filters := htmlselector.OptimizedFilterGroup{
 		"a":     {"href": {}},
 		"video": {"src": {}, "poster": {}},
 	}

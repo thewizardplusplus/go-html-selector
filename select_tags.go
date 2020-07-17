@@ -19,7 +19,7 @@ type Tag struct {
 }
 
 // SelectTags ...
-func SelectTags(reader io.Reader, filters FilterGroup) ([]Tag, error) {
+func SelectTags(reader io.Reader, filters OptimizedFilterGroup) ([]Tag, error) {
 	var tags []Tag
 	tokenizer := html.NewTokenizer(reader)
 	for {
