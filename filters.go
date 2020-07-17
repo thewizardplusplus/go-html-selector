@@ -1,0 +1,13 @@
+package htmlselector
+
+// TagName ...
+type TagName string
+
+// AttributeName ...
+type AttributeName string
+
+// FilterGroup ...
+type FilterGroup map[TagName]AttributeFilterGroup
+
+// AttributeFilterGroup ...
+type AttributeFilterGroup map[AttributeName]struct{}
