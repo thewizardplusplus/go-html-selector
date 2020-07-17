@@ -11,7 +11,7 @@ import (
 func BenchmarkSelectTags(benchmark *testing.B) {
 	type args struct {
 		makeMarkup func(tagCount int) string
-		filters    []Filter
+		filters    FilterGroup
 	}
 
 	for _, data := range []struct {
@@ -32,7 +32,7 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 
 					return strings.Join(markupParts, "")
 				},
-				filters: []Filter{{[]byte("a"), [][]byte{[]byte("href")}}},
+				filters: FilterGroup{"a": {"href": {}}},
 			},
 		},
 		{
@@ -50,9 +50,9 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 
 					return strings.Join(markupParts, "")
 				},
-				filters: []Filter{
-					{[]byte("a"), [][]byte{[]byte("href"), []byte("title")}},
-					{[]byte("img"), [][]byte{[]byte("src"), []byte("alt")}},
+				filters: FilterGroup{
+					"a":   {"href": {}, "title": {}},
+					"img": {"src": {}, "alt": {}},
 				},
 			},
 		},
