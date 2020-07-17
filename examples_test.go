@@ -28,15 +28,9 @@ func ExampleSelectTags() {
 		</ul>
 	`)
 
-	filters := []htmlselector.Filter{
-		{
-			Tag:        []byte("a"),
-			Attributes: [][]byte{[]byte("href")},
-		},
-		{
-			Tag:        []byte("video"),
-			Attributes: [][]byte{[]byte("src"), []byte("poster")},
-		},
+	filters := htmlselector.FilterGroup{
+		"a":     {"href": {}},
+		"video": {"src": {}, "poster": {}},
 	}
 
 	tags, err := htmlselector.SelectTags(reader, filters)
