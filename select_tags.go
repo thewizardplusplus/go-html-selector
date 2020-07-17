@@ -1,17 +1,10 @@
 package htmlselector
 
 import (
-	"bytes"
 	"io"
 
 	"golang.org/x/net/html"
 )
-
-// Filter ...
-type Filter struct {
-	Tag        []byte
-	Attributes [][]byte
-}
 
 // Attribute ...
 type Attribute struct {
@@ -26,36 +19,23 @@ type Tag struct {
 }
 
 // SelectTags ...
-func SelectTags(reader io.Reader, filters []Filter) ([]Tag, error) {
+func SelectTags(reader io.Reader, filters FilterGroup) ([]Tag, error) {
 	var tags []Tag
 	tokenizer := html.NewTokenizer(reader)
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			tagName, hasAttribute := tokenizer.TagName()
-			matchedFilterIndex := -1
-			for filterIndex, filter := range filters {
-				if bytes.Equal(filter.Tag, tagName) {
-					matchedFilterIndex = filterIndex
-					break
-				}
-			}
-			if matchedFilterIndex == -1 {
+			attributeFilters, ok := filters[TagName(string(tagName))]
+			if !ok {
 				continue
 			}
 
 			var attributes []Attribute
 			for hasAttribute {
 				var attributeName, attributeValue []byte
-				var attributeMatched bool
 				attributeName, attributeValue, hasAttribute = tokenizer.TagAttr()
-				for _, attribute := range filters[matchedFilterIndex].Attributes {
-					if bytes.Equal(attribute, attributeName) {
-						attributeMatched = true
-						break
-					}
-				}
-				if !attributeMatched {
+				if _, ok := attributeFilters[AttributeName(string(attributeName))]; !ok {
 					continue
 				}
 
