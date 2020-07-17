@@ -12,7 +12,7 @@ import (
 func TestSelectTags(test *testing.T) {
 	type args struct {
 		reader  io.Reader
-		filters []Filter
+		filters FilterGroup
 	}
 
 	for _, data := range []struct {
@@ -33,13 +33,8 @@ func TestSelectTags(test *testing.T) {
 		{
 			name: "success/with an empty reader",
 			args: args{
-				reader: strings.NewReader(""),
-				filters: []Filter{
-					{
-						Tag:        []byte("a"),
-						Attributes: [][]byte{[]byte("href")},
-					},
-				},
+				reader:  strings.NewReader(""),
+				filters: FilterGroup{"a": {"href": {}}},
 			},
 			wantTags: nil,
 			wantErr:  assert.NoError,
@@ -67,12 +62,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("a"),
-						Attributes: [][]byte{[]byte("href")},
-					},
-				},
+				filters: FilterGroup{"a": {"href": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -105,12 +95,7 @@ func TestSelectTags(test *testing.T) {
 						<li><img src="http://example.com/2" /></li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("img"),
-						Attributes: [][]byte{[]byte("src")},
-					},
-				},
+				filters: FilterGroup{"img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -147,16 +132,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("a"),
-						Attributes: [][]byte{[]byte("href")},
-					},
-					{
-						Tag:        []byte("img"),
-						Attributes: [][]byte{[]byte("src")},
-					},
-				},
+				filters: FilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -207,16 +183,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("a"),
-						Attributes: [][]byte{[]byte("href")},
-					},
-					{
-						Tag:        []byte("img"),
-						Attributes: [][]byte{[]byte("src")},
-					},
-				},
+				filters: FilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -249,11 +216,7 @@ func TestSelectTags(test *testing.T) {
 						<li><video></video></li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag: []byte("video"),
-					},
-				},
+				filters: FilterGroup{"video": nil},
 			},
 			wantTags: []Tag{
 				{
@@ -276,12 +239,7 @@ func TestSelectTags(test *testing.T) {
 						<li><video></video></li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("video"),
-						Attributes: [][]byte{[]byte("src"), []byte("poster")},
-					},
-				},
+				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -314,11 +272,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag: []byte("video"),
-					},
-				},
+				filters: FilterGroup{"video": nil},
 			},
 			wantTags: []Tag{
 				{
@@ -351,12 +305,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("video"),
-						Attributes: [][]byte{[]byte("src"), []byte("poster")},
-					},
-				},
+				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -401,12 +350,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("video"),
-						Attributes: [][]byte{[]byte("src"), []byte("poster")},
-					},
-				},
+				filters: FilterGroup{"video": {"src": {}, "poster": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -443,12 +387,7 @@ func TestSelectTags(test *testing.T) {
 						</li>
 					</ul>
 				`),
-				filters: []Filter{
-					{
-						Tag:        []byte("video"),
-						Attributes: [][]byte{[]byte("src")},
-					},
-				},
+				filters: FilterGroup{"video": {"src": {}}},
 			},
 			wantTags: []Tag{
 				{
@@ -481,12 +420,7 @@ func TestSelectTags(test *testing.T) {
 						<li><a href="http://example.com/2">2</a></li>
 					</ul>
 				`)),
-				filters: []Filter{
-					{
-						Tag:        []byte("a"),
-						Attributes: [][]byte{[]byte("href")},
-					},
-				},
+				filters: FilterGroup{"a": {"href": {}}},
 			},
 			wantTags: nil,
 			wantErr:  assert.Error,
