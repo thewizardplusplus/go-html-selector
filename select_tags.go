@@ -26,7 +26,7 @@ func SelectTags(reader io.Reader, filters FilterGroup) ([]Tag, error) {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			tagName, hasAttribute := tokenizer.TagName()
-			attributeFilters, ok := filters[TagName(string(tagName))]
+			attributeFilters, ok := filters[TagName(bytesToString(tagName))]
 			if !ok {
 				continue
 			}
@@ -35,7 +35,8 @@ func SelectTags(reader io.Reader, filters FilterGroup) ([]Tag, error) {
 			for hasAttribute {
 				var attributeName, attributeValue []byte
 				attributeName, attributeValue, hasAttribute = tokenizer.TagAttr()
-				if _, ok := attributeFilters[AttributeName(string(attributeName))]; !ok {
+				_, ok := attributeFilters[AttributeName(bytesToString(attributeName))]
+				if !ok {
 					continue
 				}
 
