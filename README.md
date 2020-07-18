@@ -13,14 +13,21 @@ The library that implements collecting specified HTML tags and their attributes 
   - HTML tags;
   - HTML attributes;
 - options:
-  - filtering a result:
-    - by specified HTML tags;
-    - by specified HTML attributes;
+  - filters:
+    - filtering a result:
+      - by specified HTML tags;
+      - by specified HTML attributes;
+    - friendly representation of filters:
+      - for parsing from JSON;
+      - for definition as a code literal;
 - representing a result:
   - grouping HTML attributes by their tags;
-- optimizations by the number:
-  - of memory allocations;
-  - of string copies.
+- optimizations:
+  - of searching for the right one among filters;
+  - of conversion from a byte slice to a string;
+  - by the number:
+    - of memory allocations;
+    - of string copies.
 
 ## Installation
 
