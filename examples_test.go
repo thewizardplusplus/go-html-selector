@@ -28,10 +28,10 @@ func ExampleSelectTags() {
 		</ul>
 	`)
 
-	filters := htmlselector.OptimizedFilterGroup{
-		"a":     {"href": {}},
-		"video": {"src": {}, "poster": {}},
-	}
+	filters := htmlselector.OptimizeFilters(htmlselector.FilterGroup{
+		"a":     {"href"},
+		"video": {"src", "poster"},
+	})
 
 	tags, err := htmlselector.SelectTags(reader, filters)
 	if err != nil {
