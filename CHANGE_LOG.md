@@ -1,5 +1,9 @@
 # Change Log
 
+## [v1.2](https://github.com/thewizardplusplus/go-html-selector/tree/v1.2) (2020-07-21)
+
+- skipping empty tags (i.e. without attributes; optional).
+
 ## [v1.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.1) (2020-07-18)
 
 - friendly representation of filters:
