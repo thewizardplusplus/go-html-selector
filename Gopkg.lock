@@ -88,9 +88,20 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:2c8bb9a0858e2ab458c1641345b6eaa3754b7ae453f8d30b15701f8b12b7ead7"
+  digest = "1:86ff4af7b6bb3d27c2e89b5ef8c139678acff1cad74a3c5235fc5af6b94fcc9e"
+  name = "github.com/stretchr/objx"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "35313a95ee26395aa17d366c71a2ccf788fa69b6"
+  version = "v0.3.0"
+
+[[projects]]
+  digest = "1:e1dec70f3d761a66432fa0c7f2b38a63cbe9d91761a50102def809ecf133cec4"
   name = "github.com/stretchr/testify"
-  packages = ["assert"]
+  packages = [
+    "assert",
+    "mock",
+  ]
   pruneopts = "UT"
   revision = "f654a9112bbeac49ca2cd45bfbe11533c4666cf8"
   version = "v1.6.1"
@@ -197,6 +208,7 @@
     "github.com/alecthomas/gometalinter",
     "github.com/cweill/gotests/gotests",
     "github.com/stretchr/testify/assert",
+    "github.com/stretchr/testify/mock",
     "github.com/vektra/mockery/cmd/mockery",
     "golang.org/x/net/html",
   ]
