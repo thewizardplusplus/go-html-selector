@@ -59,6 +59,7 @@ func TestFilterGroup_Unmarshal(test *testing.T) {
 func TestOptimizeFilters(test *testing.T) {
 	type args struct {
 		filters FilterGroup
+		options []Option
 	}
 
 	for _, data := range []struct {
@@ -70,20 +71,31 @@ func TestOptimizeFilters(test *testing.T) {
 			name: "without filters",
 			args: args{
 				filters: nil,
+				options: nil,
 			},
 			want: OptimizedFilterGroup{},
 		},
 		{
-			name: "with an empty filter",
+			name: "with an empty filter/without skipping",
 			args: args{
 				filters: FilterGroup{"a": nil},
+				options: nil,
 			},
 			want: OptimizedFilterGroup{"a": {}},
+		},
+		{
+			name: "with an empty filter/with skipping",
+			args: args{
+				filters: FilterGroup{"a": nil},
+				options: []Option{SkipEmptyTags()},
+			},
+			want: OptimizedFilterGroup{},
 		},
 		{
 			name: "with a nonempty filter",
 			args: args{
 				filters: FilterGroup{"a": {"href", "title"}},
+				options: nil,
 			},
 			want: OptimizedFilterGroup{"a": {"href": {}, "title": {}}},
 		},
@@ -91,6 +103,7 @@ func TestOptimizeFilters(test *testing.T) {
 			name: "with few filters",
 			args: args{
 				filters: FilterGroup{"a": {"href", "title"}, "img": {"src", "alt"}},
+				options: nil,
 			},
 			want: OptimizedFilterGroup{
 				"a":   {"href": {}, "title": {}},
@@ -99,7 +112,7 @@ func TestOptimizeFilters(test *testing.T) {
 		},
 	} {
 		test.Run(data.name, func(t *testing.T) {
-			got := OptimizeFilters(data.args.filters)
+			got := OptimizeFilters(data.args.filters, data.args.options...)
 
 			assert.Equal(test, data.want, got)
 		})

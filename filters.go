@@ -16,9 +16,18 @@ type OptimizedFilterGroup map[TagName]OptimizedAttributeFilterGroup
 type OptimizedAttributeFilterGroup map[AttributeName]struct{}
 
 // OptimizeFilters ...
-func OptimizeFilters(filters FilterGroup) OptimizedFilterGroup {
+func OptimizeFilters(
+	filters FilterGroup,
+	options ...Option,
+) OptimizedFilterGroup {
+	config := newOptionConfig(options)
+
 	optimizedFilters := make(OptimizedFilterGroup)
 	for tag, attributes := range filters {
+		if config.skipEmptyTags && len(attributes) == 0 {
+			continue
+		}
+
 		optimizedAttributeFilters := make(OptimizedAttributeFilterGroup)
 		for _, attribute := range attributes {
 			optimizedAttributeFilters[attribute] = struct{}{}
