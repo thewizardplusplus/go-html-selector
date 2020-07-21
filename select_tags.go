@@ -6,6 +6,13 @@ import (
 	"golang.org/x/net/html"
 )
 
+// Builder ...
+type Builder interface {
+	StartTag(name []byte)
+	FinishTag()
+	AddAttribute(name []byte, value []byte)
+}
+
 // Attribute ...
 type Attribute struct {
 	Name  []byte
