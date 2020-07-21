@@ -6,6 +6,8 @@ import (
 	"golang.org/x/net/html"
 )
 
+//go:generate mockery -name=Builder -inpkg -case=underscore -testonly
+
 // Builder ...
 type Builder interface {
 	StartTag(name []byte)
