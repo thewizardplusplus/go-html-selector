@@ -25,6 +25,10 @@ func ExampleSelectTags() {
 					poster="http://example.com/2.2">
 				</video>
 			</li>
+			<li>
+				<a>3</a>
+				<video></video>
+			</li>
 		</ul>
 	`)
 
@@ -33,7 +37,8 @@ func ExampleSelectTags() {
 		"video": {"src", "poster"},
 	})
 
-	tags, err := htmlselector.SelectTags(reader, filters)
+	tags, err :=
+		htmlselector.SelectTags(reader, filters, htmlselector.SkipEmptyTags())
 	if err != nil {
 		log.Fatal(err)
 	}
