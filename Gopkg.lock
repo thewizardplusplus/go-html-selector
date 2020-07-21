@@ -96,6 +96,17 @@
   version = "v1.6.1"
 
 [[projects]]
+  digest = "1:b49f6e75d8aa6f18a320671f674a75a3f35eec1e9da5cb1631605eb1058dae3c"
+  name = "github.com/vektra/mockery"
+  packages = [
+    "cmd/mockery",
+    "mockery",
+  ]
+  pruneopts = "UT"
+  revision = "b91686d8be1370af45d78e3c6744216a90624df4"
+  version = "v1.1.2"
+
+[[projects]]
   digest = "1:467bb8fb8fa786448b8d486cd0bb7c1a5577dcd7310441aa02a20110cd9f727d"
   name = "golang.org/x/mod"
   packages = [
@@ -119,10 +130,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c7de72105509e3b2a956c6228c8ff18f3fab95781b6bb4ab1908acb7f52ac365"
+  digest = "1:616bf5ceb5a644acc0b4d2a132bfd9082efc43d97559c01f7e391dabcd7ebfa7"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
+    "go/gcexportdata",
+    "go/internal/gcimporter",
+    "go/internal/packagesdriver",
+    "go/packages",
+    "go/types/typeutil",
     "imports",
     "internal/event",
     "internal/event/core",
@@ -132,6 +148,8 @@
     "internal/gocommand",
     "internal/gopathwalk",
     "internal/imports",
+    "internal/packagesinternal",
+    "internal/typesinternal",
   ]
   pruneopts = "UT"
   revision = "fd294ab11aed8d198f7a12a86dfe0a970fdab143"
@@ -179,6 +197,7 @@
     "github.com/alecthomas/gometalinter",
     "github.com/cweill/gotests/gotests",
     "github.com/stretchr/testify/assert",
+    "github.com/vektra/mockery/cmd/mockery",
     "golang.org/x/net/html",
   ]
   solver-name = "gps-cdcl"
