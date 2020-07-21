@@ -20,6 +20,7 @@ The library that implements collecting specified HTML tags and their attributes 
     - friendly representation of filters:
       - for parsing from JSON;
       - for definition as a code literal;
+  - skipping empty tags (i.e. without attributes; optional);
 - representing a result:
   - grouping HTML attributes by their tags;
 - optimizations:
