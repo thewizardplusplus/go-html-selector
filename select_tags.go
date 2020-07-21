@@ -19,7 +19,13 @@ type Tag struct {
 }
 
 // SelectTags ...
-func SelectTags(reader io.Reader, filters OptimizedFilterGroup) ([]Tag, error) {
+func SelectTags(
+	reader io.Reader,
+	filters OptimizedFilterGroup,
+	options ...Option,
+) ([]Tag, error) {
+	config := newOptionConfig(options)
+
 	var tags []Tag
 	tokenizer := html.NewTokenizer(reader)
 	for {
@@ -44,6 +50,9 @@ func SelectTags(reader io.Reader, filters OptimizedFilterGroup) ([]Tag, error) {
 					Name:  copyBytes(attributeName),
 					Value: copyBytes(attributeValue),
 				})
+			}
+			if config.skipEmptyTags && len(attributes) == 0 {
+				continue
 			}
 
 			tags = append(tags, Tag{

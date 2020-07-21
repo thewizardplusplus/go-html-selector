@@ -13,6 +13,7 @@ func TestSelectTags(test *testing.T) {
 	type args struct {
 		reader  io.Reader
 		filters OptimizedFilterGroup
+		options []Option
 	}
 
 	for _, data := range []struct {
@@ -26,6 +27,7 @@ func TestSelectTags(test *testing.T) {
 			args: args{
 				reader:  strings.NewReader(""),
 				filters: nil,
+				options: nil,
 			},
 			wantTags: nil,
 			wantErr:  assert.NoError,
@@ -35,6 +37,7 @@ func TestSelectTags(test *testing.T) {
 			args: args{
 				reader:  strings.NewReader(""),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				options: nil,
 			},
 			wantTags: nil,
 			wantErr:  assert.NoError,
@@ -49,6 +52,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: nil,
+				options: nil,
 			},
 			wantTags: nil,
 			wantErr:  assert.NoError,
@@ -63,6 +67,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -96,6 +101,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"img": {"src": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -133,6 +139,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -184,6 +191,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -208,7 +216,7 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			name: "success/without attributes/by markup and filters",
+			name: "success/without attributes/without skipping/by markup and filters",
 			args: args{
 				reader: strings.NewReader(`
 					<ul>
@@ -217,6 +225,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -231,7 +240,7 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			name: "success/without attributes/by markup",
+			name: "success/without attributes/without skipping/by markup",
 			args: args{
 				reader: strings.NewReader(`
 					<ul>
@@ -240,6 +249,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -254,7 +264,7 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			name: "success/without attributes/by filters",
+			name: "success/without attributes/without skipping/by filters",
 			args: args{
 				reader: strings.NewReader(`
 					<ul>
@@ -273,6 +283,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -285,6 +296,61 @@ func TestSelectTags(test *testing.T) {
 				},
 			},
 			wantErr: assert.NoError,
+		},
+		{
+			name: "success/without attributes/with skipping/by markup and filters",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><video></video></li>
+						<li><video></video></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"video": nil},
+				options: []Option{SkipEmptyTags()},
+			},
+			wantTags: nil,
+			wantErr:  assert.NoError,
+		},
+		{
+			name: "success/without attributes/with skipping/by markup",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><video></video></li>
+						<li><video></video></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				options: []Option{SkipEmptyTags()},
+			},
+			wantTags: nil,
+			wantErr:  assert.NoError,
+		},
+		{
+			name: "success/without attributes/with skipping/by filters",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<video
+								src="http://example.com/1"
+								poster="http://example.com/1.1">
+							</video>
+						</li>
+						<li>
+							<video
+								src="http://example.com/2"
+								poster="http://example.com/2.1">
+							</video>
+						</li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"video": nil},
+				options: []Option{SkipEmptyTags()},
+			},
+			wantTags: nil,
+			wantErr:  assert.NoError,
 		},
 		{
 			name: "success/with few attributes",
@@ -306,6 +372,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -351,6 +418,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -388,6 +456,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}}},
+				options: nil,
 			},
 			wantTags: []Tag{
 				{
@@ -421,13 +490,15 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`)),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				options: nil,
 			},
 			wantTags: nil,
 			wantErr:  assert.Error,
 		},
 	} {
 		test.Run(data.name, func(test *testing.T) {
-			gotTags, gotErr := SelectTags(data.args.reader, data.args.filters)
+			gotTags, gotErr :=
+				SelectTags(data.args.reader, data.args.filters, data.args.options...)
 
 			assert.Equal(test, data.wantTags, gotTags)
 			data.wantErr(test, gotErr)
