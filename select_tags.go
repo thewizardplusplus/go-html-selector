@@ -10,8 +10,7 @@ import (
 
 // Builder ...
 type Builder interface {
-	StartTag(name []byte)
-	FinishTag()
+	AddTag(name []byte)
 	AddAttribute(name []byte, value []byte)
 }
 
@@ -46,8 +45,6 @@ func SelectTags(
 				continue
 			}
 
-			builder.StartTag(tagName)
-
 			var attributeCount int
 			for hasAttribute {
 				var attributeName, attributeValue []byte
@@ -64,7 +61,7 @@ func SelectTags(
 				continue
 			}
 
-			builder.FinishTag()
+			builder.AddTag(tagName)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return err

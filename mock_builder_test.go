@@ -14,12 +14,7 @@ func (_m *MockBuilder) AddAttribute(name []byte, value []byte) {
 	_m.Called(name, value)
 }
 
-// FinishTag provides a mock function with given fields:
-func (_m *MockBuilder) FinishTag() {
-	_m.Called()
-}
-
-// StartTag provides a mock function with given fields: name
-func (_m *MockBuilder) StartTag(name []byte) {
+// AddTag provides a mock function with given fields: name
+func (_m *MockBuilder) AddTag(name []byte) {
 	_m.Called(name)
 }

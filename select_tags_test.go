@@ -70,8 +70,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("a")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("a")).Times(2)
 					builder.
 						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
 						Once()
@@ -97,8 +96,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"img": {"src": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("img")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("img")).Times(2)
 					builder.
 						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
 						Once()
@@ -128,9 +126,8 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("a")).Times(2)
-					builder.On("StartTag", []byte("img")).Times(2)
-					builder.On("FinishTag").Times(4)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.On("AddTag", []byte("img")).Times(2)
 					builder.
 						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
 						Once()
@@ -162,8 +159,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("a")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("a")).Times(2)
 					builder.
 						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
 						Once()
@@ -189,8 +185,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": nil},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 
 					return builder
 				}(),
@@ -210,8 +205,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 
 					return builder
 				}(),
@@ -241,8 +235,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": nil},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 
 					return builder
 				}(),
@@ -260,12 +253,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
-				builder: func() Builder {
-					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-
-					return builder
-				}(),
+				builder: new(MockBuilder),
 				options: []Option{SkipEmptyTags()},
 			},
 			wantErr: assert.NoError,
@@ -280,12 +268,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
-				builder: func() Builder {
-					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-
-					return builder
-				}(),
+				builder: new(MockBuilder),
 				options: []Option{SkipEmptyTags()},
 			},
 			wantErr: assert.NoError,
@@ -310,12 +293,7 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
-				builder: func() Builder {
-					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-
-					return builder
-				}(),
+				builder: new(MockBuilder),
 				options: []Option{SkipEmptyTags()},
 			},
 			wantErr: assert.NoError,
@@ -342,8 +320,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 					builder.
 						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
 						Once()
@@ -379,8 +356,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 					builder.
 						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
 						Once()
@@ -410,8 +386,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"video": {"src": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("video")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("video")).Times(2)
 					builder.
 						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
 						Once()
@@ -437,8 +412,7 @@ func TestSelectTags(test *testing.T) {
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
 				builder: func() Builder {
 					builder := new(MockBuilder)
-					builder.On("StartTag", []byte("a")).Times(2)
-					builder.On("FinishTag").Times(2)
+					builder.On("AddTag", []byte("a")).Times(2)
 					builder.
 						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
 						Once()
