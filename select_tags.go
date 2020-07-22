@@ -31,11 +31,11 @@ type Tag struct {
 func SelectTags(
 	reader io.Reader,
 	filters OptimizedFilterGroup,
+	builder Builder,
 	options ...Option,
-) ([]Tag, error) {
+) error {
 	config := newOptionConfig(options)
 
-	var tags []Tag
 	tokenizer := html.NewTokenizer(reader)
 	for {
 		switch tokenizer.Next() {
@@ -46,7 +46,9 @@ func SelectTags(
 				continue
 			}
 
-			var attributes []Attribute
+			builder.StartTag(tagName)
+
+			var attributeCount int
 			for hasAttribute {
 				var attributeName, attributeValue []byte
 				attributeName, attributeValue, hasAttribute = tokenizer.TagAttr()
@@ -55,25 +57,20 @@ func SelectTags(
 					continue
 				}
 
-				attributes = append(attributes, Attribute{
-					Name:  copyBytes(attributeName),
-					Value: copyBytes(attributeValue),
-				})
+				builder.AddAttribute(attributeName, attributeValue)
+				attributeCount++
 			}
-			if config.skipEmptyTags && len(attributes) == 0 {
+			if config.skipEmptyTags && attributeCount == 0 {
 				continue
 			}
 
-			tags = append(tags, Tag{
-				Name:       copyBytes(tagName),
-				Attributes: attributes,
-			})
+			builder.FinishTag()
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
-				return nil, err
+				return err
 			}
 
-			return tags, nil
+			return nil
 		}
 	}
 }
