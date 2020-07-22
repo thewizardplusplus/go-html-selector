@@ -39,24 +39,13 @@ func SelectTags(
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			tagName, hasAttribute := tokenizer.TagName()
+			tagName, _ := tokenizer.TagName()
 			attributeFilters, ok := filters[TagName(bytesToString(tagName))]
 			if !ok {
 				continue
 			}
 
-			var attributeCount int
-			for hasAttribute {
-				var attributeName, attributeValue []byte
-				attributeName, attributeValue, hasAttribute = tokenizer.TagAttr()
-				_, ok := attributeFilters[AttributeName(bytesToString(attributeName))]
-				if !ok {
-					continue
-				}
-
-				builder.AddAttribute(attributeName, attributeValue)
-				attributeCount++
-			}
+			attributeCount := selectAttributes(tokenizer, attributeFilters, builder)
 			if config.skipEmptyTags && attributeCount == 0 {
 				continue
 			}
@@ -70,4 +59,24 @@ func SelectTags(
 			return nil
 		}
 	}
+}
+
+func selectAttributes(
+	tokenizer *html.Tokenizer,
+	filters OptimizedAttributeFilterGroup,
+	builder Builder,
+) (count int) {
+	hasNext := true
+	for hasNext {
+		var name, value []byte
+		name, value, hasNext = tokenizer.TagAttr()
+		if _, ok := filters[AttributeName(bytesToString(name))]; !ok {
+			continue
+		}
+
+		builder.AddAttribute(name, value)
+		count++
+	}
+
+	return count
 }
