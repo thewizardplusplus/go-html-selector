@@ -7,40 +7,41 @@ import (
 	"testing/iotest"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestSelectTags(test *testing.T) {
 	type args struct {
 		reader  io.Reader
 		filters OptimizedFilterGroup
+		builder Builder
 		options []Option
 	}
 
 	for _, data := range []struct {
-		name     string
-		args     args
-		wantTags []Tag
-		wantErr  assert.ErrorAssertionFunc
+		name    string
+		args    args
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "success/with empty arguments",
 			args: args{
 				reader:  strings.NewReader(""),
 				filters: nil,
+				builder: new(MockBuilder),
 				options: nil,
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/with an empty reader",
 			args: args{
 				reader:  strings.NewReader(""),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: new(MockBuilder),
 				options: nil,
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/without filters",
@@ -52,10 +53,10 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: nil,
+				builder: new(MockBuilder),
 				options: nil,
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/with a conventional tag",
@@ -67,27 +68,20 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("a")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -101,27 +95,20 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"img": {"src": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("img")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("img"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("img"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -139,45 +126,27 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("a")).Times(2)
+					builder.On("StartTag", []byte("img")).Times(2)
+					builder.On("FinishTag").Times(4)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1.1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2.1")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("img"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/1.1"),
-						},
-					},
-				},
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
-				{
-					Name: []byte("img"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/2.1"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -191,27 +160,20 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"a": {"href": {}}, "img": {"src": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("a")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("a"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("href"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -225,17 +187,14 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -249,17 +208,14 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -283,17 +239,14 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
-				{
-					Name:       []byte("video"),
-					Attributes: nil,
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -307,10 +260,15 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+
+					return builder
+				}(),
 				options: []Option{SkipEmptyTags()},
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/without attributes/with skipping/by markup",
@@ -322,10 +280,15 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+
+					return builder
+				}(),
 				options: []Option{SkipEmptyTags()},
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/without attributes/with skipping/by filters",
@@ -347,10 +310,15 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": nil},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+
+					return builder
+				}(),
 				options: []Option{SkipEmptyTags()},
 			},
-			wantTags: nil,
-			wantErr:  assert.NoError,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "success/with few attributes",
@@ -372,35 +340,26 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("poster"), []byte("http://example.com/1.1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("poster"), []byte("http://example.com/2.1")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/1"),
-						},
-						{
-							Name:  []byte("poster"),
-							Value: []byte("http://example.com/1.1"),
-						},
-					},
-				},
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/2"),
-						},
-						{
-							Name:  []byte("poster"),
-							Value: []byte("http://example.com/2.1"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -418,27 +377,20 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}, "poster": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -456,27 +408,20 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{"video": {"src": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("video")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
-			},
-			wantTags: []Tag{
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/1"),
-						},
-					},
-				},
-				{
-					Name: []byte("video"),
-					Attributes: []Attribute{
-						{
-							Name:  []byte("src"),
-							Value: []byte("http://example.com/2"),
-						},
-					},
-				},
 			},
 			wantErr: assert.NoError,
 		},
@@ -490,17 +435,33 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`)),
 				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("StartTag", []byte("a")).Times(2)
+					builder.On("FinishTag").Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+
+					return builder
+				}(),
 				options: nil,
 			},
-			wantTags: nil,
-			wantErr:  assert.Error,
+			wantErr: assert.Error,
 		},
 	} {
 		test.Run(data.name, func(test *testing.T) {
-			gotTags, gotErr :=
-				SelectTags(data.args.reader, data.args.filters, data.args.options...)
+			gotErr := SelectTags(
+				data.args.reader,
+				data.args.filters,
+				data.args.builder,
+				data.args.options...,
+			)
 
-			assert.Equal(test, data.wantTags, gotTags)
+			mock.AssertExpectationsForObjects(test, data.args.builder)
 			data.wantErr(test, gotErr)
 		})
 	}
