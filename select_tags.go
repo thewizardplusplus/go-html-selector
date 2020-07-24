@@ -3,6 +3,7 @@ package htmlselector
 import (
 	"io"
 
+	byteutils "github.com/thewizardplusplus/go-html-selector/byte-utils"
 	"golang.org/x/net/html"
 )
 
@@ -57,7 +58,7 @@ func selectTag(
 	skipEmptyTags bool,
 ) {
 	name, _ := tokenizer.TagName()
-	attributeFilters, ok := filters[TagName(bytesToString(name))]
+	attributeFilters, ok := filters[TagName(byteutils.String(name))]
 	if !ok {
 		return
 	}
@@ -79,7 +80,7 @@ func selectAttributes(
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = tokenizer.TagAttr()
-		if _, ok := filters[AttributeName(bytesToString(name))]; !ok {
+		if _, ok := filters[AttributeName(byteutils.String(name))]; !ok {
 			continue
 		}
 
