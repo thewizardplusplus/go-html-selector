@@ -6,12 +6,12 @@ import (
 
 // FlattenBuilder ...
 type FlattenBuilder struct {
-	attributes [][]byte
+	attributeValues [][]byte
 }
 
-// Attributes ...
-func (builder FlattenBuilder) Attributes() [][]byte {
-	return builder.attributes
+// AttributeValues ...
+func (builder FlattenBuilder) AttributeValues() [][]byte {
+	return builder.attributeValues
 }
 
 // AddTag ...
@@ -20,5 +20,5 @@ func (builder FlattenBuilder) AddTag(name []byte) {}
 // AddAttribute ...
 func (builder *FlattenBuilder) AddAttribute(name []byte, value []byte) {
 	valueCopy := byteutils.Copy(value)
-	builder.attributes = append(builder.attributes, valueCopy)
+	builder.attributeValues = append(builder.attributeValues, valueCopy)
 }
