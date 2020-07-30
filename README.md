@@ -56,7 +56,7 @@ $ dep ensure -vendor-only
 
 ## Examples
 
-`htmlselector.SelectTags()`:
+`htmlselector.SelectTags()` with the structural builder:
 
 ```go
 package main
@@ -128,6 +128,74 @@ func main() {
 	// <video>:
 	//   src="http://example.com/2.1"
 	//   poster="http://example.com/2.2"
+}
+```
+
+`htmlselector.SelectTags()` with the flatten builder:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"strings"
+
+	htmlselector "github.com/thewizardplusplus/go-html-selector"
+	"github.com/thewizardplusplus/go-html-selector/builders"
+)
+
+func main() {
+	reader := strings.NewReader(`
+		<ul>
+			<li>
+				<a href="http://example.com/1">1</a>
+				<video
+					src="http://example.com/1.1"
+					poster="http://example.com/1.2">
+				</video>
+			</li>
+			<li>
+				<a href="http://example.com/2">2</a>
+				<video
+					src="http://example.com/2.1"
+					poster="http://example.com/2.2">
+				</video>
+			</li>
+			<li>
+				<a>3</a>
+				<video></video>
+			</li>
+		</ul>
+	`)
+
+	filters := htmlselector.OptimizeFilters(htmlselector.FilterGroup{
+		"a":     {"href"},
+		"video": {"src", "poster"},
+	})
+
+	var builder builders.FlattenBuilder
+	err := htmlselector.SelectTags(
+		reader,
+		filters,
+		&builder,
+		htmlselector.SkipEmptyTags(),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, attributeValue := range builder.AttributeValues() {
+		fmt.Printf("%q\n", attributeValue)
+	}
+
+	// Output:
+	// "http://example.com/1"
+	// "http://example.com/1.1"
+	// "http://example.com/1.2"
+	// "http://example.com/2"
+	// "http://example.com/2.1"
+	// "http://example.com/2.2"
 }
 ```
 
