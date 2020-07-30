@@ -6,6 +6,10 @@ import (
 
 // Copy ...
 func Copy(bytes []byte) []byte {
+	if len(bytes) == 0 {
+		return nil
+	}
+
 	bytesCopy := make([]byte, len(bytes))
 	copy(bytesCopy, bytes)
 

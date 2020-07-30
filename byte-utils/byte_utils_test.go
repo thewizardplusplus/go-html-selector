@@ -25,7 +25,7 @@ func TestCopy(test *testing.T) {
 			},
 			action:       func(bytes []byte) {},
 			wantOriginal: nil,
-			wantCopy:     []byte{},
+			wantCopy:     nil,
 		},
 		{
 			name: "empty",
@@ -34,7 +34,7 @@ func TestCopy(test *testing.T) {
 			},
 			action:       func(bytes []byte) {},
 			wantOriginal: []byte{},
-			wantCopy:     []byte{},
+			wantCopy:     nil,
 		},
 		{
 			name: "nonempty/without changes",
