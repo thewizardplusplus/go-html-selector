@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"code.cloudfoundry.org/bytefmt"
+	"github.com/thewizardplusplus/go-html-selector/builders"
 )
 
 func BenchmarkSelectTags(benchmark *testing.B) {
@@ -67,7 +68,8 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 				benchmark.ResetTimer()
 
 				for i := 0; i < benchmark.N; i++ {
-					SelectTags(reader, data.args.filters) // nolint: errcheck
+					var builder builders.StructuralBuilder
+					SelectTags(reader, data.args.filters, &builder) // nolint: errcheck
 				}
 			})
 		}
