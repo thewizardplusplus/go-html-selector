@@ -64,11 +64,9 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 
 			name := fmt.Sprintf("%s/%d tags/%s", data.name, tagCount, markupSize)
 			benchmark.Run(name, func(benchmark *testing.B) {
-				reader := strings.NewReader(markup)
-				benchmark.ResetTimer()
-
 				for i := 0; i < benchmark.N; i++ {
 					var builder builders.StructuralBuilder
+					reader := strings.NewReader(markup)
 					SelectTags(reader, data.args.filters, &builder) // nolint: errcheck
 				}
 			})
