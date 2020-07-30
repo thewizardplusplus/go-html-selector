@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.3](https://github.com/thewizardplusplus/go-html-selector/tree/v1.3) (2020-07-30)
+
+- representing a result:
+  - using the builder interface for building a result;
+  - built-in builders:
+    - with grouping HTML attributes by their tags.
+
 ## [v1.2](https://github.com/thewizardplusplus/go-html-selector/tree/v1.2) (2020-07-21)
 
 - skipping empty tags (i.e. without attributes; optional).
