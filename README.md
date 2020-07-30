@@ -88,7 +88,11 @@ func main() {
 				</video>
 			</li>
 			<li>
-				<a>3</a>
+				<a href="">3</a>
+				<video src="" poster=""></video>
+			</li>
+			<li>
+				<a>4</a>
 				<video></video>
 			</li>
 		</ul>
@@ -105,6 +109,7 @@ func main() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
+		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -163,7 +168,11 @@ func main() {
 				</video>
 			</li>
 			<li>
-				<a>3</a>
+				<a href="">3</a>
+				<video src="" poster=""></video>
+			</li>
+			<li>
+				<a>4</a>
 				<video></video>
 			</li>
 		</ul>
@@ -180,6 +189,7 @@ func main() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
+		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)

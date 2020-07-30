@@ -27,7 +27,11 @@ func ExampleSelectTags_withStructuralBuilder() {
 				</video>
 			</li>
 			<li>
-				<a>3</a>
+				<a href="">3</a>
+				<video src="" poster=""></video>
+			</li>
+			<li>
+				<a>4</a>
 				<video></video>
 			</li>
 		</ul>
@@ -44,6 +48,7 @@ func ExampleSelectTags_withStructuralBuilder() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
+		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -87,7 +92,11 @@ func ExampleSelectTags_withFlattenBuilder() {
 				</video>
 			</li>
 			<li>
-				<a>3</a>
+				<a href="">3</a>
+				<video src="" poster=""></video>
+			</li>
+			<li>
+				<a>4</a>
 				<video></video>
 			</li>
 		</ul>
@@ -104,6 +113,7 @@ func ExampleSelectTags_withFlattenBuilder() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
+		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)
