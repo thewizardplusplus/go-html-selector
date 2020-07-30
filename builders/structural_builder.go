@@ -39,8 +39,13 @@ func (builder *StructuralBuilder) AddTag(name []byte) {
 
 // AddAttribute ...
 func (builder *StructuralBuilder) AddAttribute(name []byte, value []byte) {
-	builder.attributes = append(builder.attributes, Attribute{
-		Name:  byteutils.Copy(name),
-		Value: byteutils.Copy(value),
-	})
+	attributeData := make([]byte, len(name)+len(value))
+	attribute := Attribute{
+		Name:  attributeData[:len(name)],
+		Value: attributeData[len(name):],
+	}
+	copy(attribute.Name, name)
+	copy(attribute.Value, value)
+
+	builder.attributes = append(builder.attributes, attribute)
 }
