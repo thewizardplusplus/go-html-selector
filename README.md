@@ -136,23 +136,23 @@ func main() {
 `htmlselector.SelectTags()` with a simple markup:
 
 ```
-BenchmarkSelectTags/simple_markup/10_tags/430B-8         	 2000000	       917 ns/op	    4353 B/op	       4 allocs/op
-BenchmarkSelectTags/simple_markup/100_tags/4.4K-8        	 2000000	       921 ns/op	    4353 B/op	       4 allocs/op
-BenchmarkSelectTags/simple_markup/1000_tags/45.7K-8      	 2000000	       902 ns/op	    4353 B/op	       4 allocs/op
-BenchmarkSelectTags/simple_markup/10000_tags/476.3K-8    	 2000000	       948 ns/op	    4354 B/op	       4 allocs/op
-BenchmarkSelectTags/simple_markup/100000_tags/4.8M-8     	 2000000	       838 ns/op	    4370 B/op	       4 allocs/op
-BenchmarkSelectTags/simple_markup/1000000_tags/50.3M-8   	  300000	      3561 ns/op	    5485 B/op	      17 allocs/op
+BenchmarkSelectTags/simple_markup/10_tags/430B-8         	  200000	      9474 ns/op	     6784 B/op	      51 allocs/op
+BenchmarkSelectTags/simple_markup/100_tags/4.4K-8        	   20000	     72306 ns/op	    25456 B/op	     414 allocs/op
+BenchmarkSelectTags/simple_markup/1000_tags/45.7K-8      	    2000	    621791 ns/op	   190672 B/op	    4017 allocs/op
+BenchmarkSelectTags/simple_markup/10000_tags/476.3K-8    	     200	   7247563 ns/op	  3448480 B/op	   40027 allocs/op
+BenchmarkSelectTags/simple_markup/100000_tags/4.8M-8     	      20	  80736482 ns/op	 35420205 B/op	  400037 allocs/op
+BenchmarkSelectTags/simple_markup/1000000_tags/50.3M-8   	       2	 802693264 ns/op	339752800 B/op	 4000047 allocs/op
 ```
 
 `htmlselector.SelectTags()` with a complex markup:
 
 ```
-BenchmarkSelectTags/complex_markup/10_tags/1020B-8       	 2000000	       915 ns/op	     4353 B/op	       4 allocs/op
-BenchmarkSelectTags/complex_markup/100_tags/10.4K-8      	 2000000	       932 ns/op	     4353 B/op	       4 allocs/op
-BenchmarkSelectTags/complex_markup/1000_tags/108.8K-8    	 2000000	       931 ns/op	     4353 B/op	       4 allocs/op
-BenchmarkSelectTags/complex_markup/10000_tags/1.1M-8     	 2000000	      1028 ns/op	     4357 B/op	       4 allocs/op
-BenchmarkSelectTags/complex_markup/100000_tags/11.6M-8   	 2000000	       881 ns/op	     4398 B/op	       4 allocs/op
-BenchmarkSelectTags/complex_markup/1000000_tags/120.6M-8 	       1	2452693731 ns/op	881045232 B/op	14000050 allocs/op
+BenchmarkSelectTags/complex_markup/10_tags/1020B-8       	  100000	     21746 ns/op	    11264 B/op	     153 allocs/op
+BenchmarkSelectTags/complex_markup/100_tags/10.4K-8      	   10000	    187676 ns/op	    67328 B/op	    1416 allocs/op
+BenchmarkSelectTags/complex_markup/1000_tags/108.8K-8    	    1000	   1823346 ns/op	   740608 B/op	   14021 allocs/op
+BenchmarkSelectTags/complex_markup/10000_tags/1.1M-8     	     100	  21162013 ns/op	  9136409 B/op	  140031 allocs/op
+BenchmarkSelectTags/complex_markup/100000_tags/11.6M-8   	       5	 227873490 ns/op	 90800432 B/op	 1400041 allocs/op
+BenchmarkSelectTags/complex_markup/1000000_tags/120.6M-8 	       1	2402936519 ns/op	881045280 B/op	14000051 allocs/op
 ```
 
 ## License
