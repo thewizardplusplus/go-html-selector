@@ -1,5 +1,9 @@
 # Change Log
 
+## [v1.3.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.3.1) (2020-07-30)
+
+- fix benchmarks.
+
 ## [v1.3](https://github.com/thewizardplusplus/go-html-selector/tree/v1.3) (2020-07-30)
 
 - representing a result:
