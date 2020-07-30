@@ -20,11 +20,14 @@ The library that implements collecting specified HTML tags and their attributes 
     - friendly representation of filters:
       - for parsing from JSON;
       - for definition as a code literal;
-  - skipping empty tags (i.e. without attributes; optional);
+  - skipping empty entities (separately optional):
+    - tags without attributes;
+    - attributes with an empty value;
 - representing a result:
   - using the builder interface for building a result;
   - built-in builders:
     - with grouping HTML attributes by their tags;
+    - with collecting only values of HTML attributes;
 - optimizations:
   - of searching for the right one among filters;
   - of conversion from a byte slice to a string;
