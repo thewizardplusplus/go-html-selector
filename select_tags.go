@@ -28,7 +28,7 @@ func SelectTags(
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			selectTag(tokenizer, filters, builder, config.skipEmptyTags)
+			selectTag(tokenizer, filters, builder, config)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return err
@@ -43,7 +43,7 @@ func selectTag(
 	tokenizer *html.Tokenizer,
 	filters OptimizedFilterGroup,
 	builder Builder,
-	skipEmptyTags bool,
+	config OptionConfig,
 ) {
 	name, hasAttributes := tokenizer.TagName()
 	attributeFilters, ok := filters[TagName(byteutils.String(name))]
@@ -52,8 +52,8 @@ func selectTag(
 	}
 
 	attributeCount :=
-		selectAttributes(tokenizer, hasAttributes, attributeFilters, builder)
-	if skipEmptyTags && attributeCount == 0 {
+		selectAttributes(tokenizer, hasAttributes, attributeFilters, builder, config)
+	if config.skipEmptyTags && attributeCount == 0 {
 		return
 	}
 
@@ -65,12 +65,16 @@ func selectAttributes(
 	hasAttributes bool,
 	filters OptimizedAttributeFilterGroup,
 	builder Builder,
+	config OptionConfig,
 ) (count int) {
 	hasNext := hasAttributes
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = tokenizer.TagAttr()
 		if _, ok := filters[AttributeName(byteutils.String(name))]; !ok {
+			continue
+		}
+		if config.skipEmptyAttributes && len(value) == 0 {
 			continue
 		}
 
