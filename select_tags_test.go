@@ -401,6 +401,64 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with empty attributes/without skipping",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="">1</a></li>
+						<li><a href="">2</a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.On("AddAttribute", []byte("href"), []byte{}).Once()
+					builder.On("AddAttribute", []byte("href"), []byte{}).Once()
+
+					return builder
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/with empty attributes/with skipping of empty attributes",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="">1</a></li>
+						<li><a href="">2</a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(2)
+
+					return builder
+				}(),
+				options: []Option{SkipEmptyAttributes()},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/with empty attributes" +
+				"/with skipping of empty tags and attributes",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="">1</a></li>
+						<li><a href="">2</a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: new(MockBuilder),
+				options: []Option{SkipEmptyTags(), SkipEmptyAttributes()},
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "error",
 			args: args{
 				reader: iotest.TimeoutReader(strings.NewReader(`
