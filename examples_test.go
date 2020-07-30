@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	htmlselector "github.com/thewizardplusplus/go-html-selector"
+	"github.com/thewizardplusplus/go-html-selector/builders"
 )
 
 func ExampleSelectTags() {
@@ -37,13 +38,18 @@ func ExampleSelectTags() {
 		"video": {"src", "poster"},
 	})
 
-	tags, err :=
-		htmlselector.SelectTags(reader, filters, htmlselector.SkipEmptyTags())
+	var builder builders.StructuralBuilder
+	err := htmlselector.SelectTags(
+		reader,
+		filters,
+		&builder,
+		htmlselector.SkipEmptyTags(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, tag := range tags {
+	for _, tag := range builder.Tags() {
 		fmt.Printf("<%s>:\n", tag.Name)
 		for _, attribute := range tag.Attributes {
 			fmt.Printf("  %s=%q\n", attribute.Name, attribute.Value)
