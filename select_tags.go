@@ -45,13 +45,14 @@ func selectTag(
 	builder Builder,
 	skipEmptyTags bool,
 ) {
-	name, _ := tokenizer.TagName()
+	name, hasAttributes := tokenizer.TagName()
 	attributeFilters, ok := filters[TagName(byteutils.String(name))]
 	if !ok {
 		return
 	}
 
-	attributeCount := selectAttributes(tokenizer, attributeFilters, builder)
+	attributeCount :=
+		selectAttributes(tokenizer, hasAttributes, attributeFilters, builder)
 	if skipEmptyTags && attributeCount == 0 {
 		return
 	}
@@ -61,10 +62,11 @@ func selectTag(
 
 func selectAttributes(
 	tokenizer *html.Tokenizer,
+	hasAttributes bool,
 	filters OptimizedAttributeFilterGroup,
 	builder Builder,
 ) (count int) {
-	hasNext := true
+	hasNext := hasAttributes
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = tokenizer.TagAttr()
