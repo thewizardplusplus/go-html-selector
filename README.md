@@ -214,26 +214,52 @@ func main() {
 
 ## Benchmarks
 
+### With Structural Builder
+
 `htmlselector.SelectTags()` with a simple markup:
 
 ```
-BenchmarkSelectTags/simple_markup/10_tags/430B-8         	  200000	      9474 ns/op	     6784 B/op	      51 allocs/op
-BenchmarkSelectTags/simple_markup/100_tags/4.4K-8        	   20000	     72306 ns/op	    25456 B/op	     414 allocs/op
-BenchmarkSelectTags/simple_markup/1000_tags/45.7K-8      	    2000	    621791 ns/op	   190672 B/op	    4017 allocs/op
-BenchmarkSelectTags/simple_markup/10000_tags/476.3K-8    	     200	   7247563 ns/op	  3448480 B/op	   40027 allocs/op
-BenchmarkSelectTags/simple_markup/100000_tags/4.8M-8     	      20	  80736482 ns/op	 35420205 B/op	  400037 allocs/op
-BenchmarkSelectTags/simple_markup/1000000_tags/50.3M-8   	       2	 802693264 ns/op	339752800 B/op	 4000047 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/10_tags/430B-8         	  200000	     12572 ns/op	     8124 B/op	      35 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/100_tags/4.4K-8        	   20000	     93708 ns/op	    49167 B/op	     305 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/1000_tags/45.7K-8      	    3000	    716388 ns/op	   367374 B/op	    3005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/10000_tags/476.3K-8    	     300	   7021473 ns/op	  2772749 B/op	   30005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/100000_tags/4.8M-8     	      20	  59393679 ns/op	  8104370 B/op	  300005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/1000000_tags/50.3M-8   	       1	1166593360 ns/op	998999904 B/op	 3000006 allocs/op
 ```
 
 `htmlselector.SelectTags()` with a complex markup:
 
 ```
-BenchmarkSelectTags/complex_markup/10_tags/1020B-8       	  100000	     21746 ns/op	    11264 B/op	     153 allocs/op
-BenchmarkSelectTags/complex_markup/100_tags/10.4K-8      	   10000	    187676 ns/op	    67328 B/op	    1416 allocs/op
-BenchmarkSelectTags/complex_markup/1000_tags/108.8K-8    	    1000	   1823346 ns/op	   740608 B/op	   14021 allocs/op
-BenchmarkSelectTags/complex_markup/10000_tags/1.1M-8     	     100	  21162013 ns/op	  9136409 B/op	  140031 allocs/op
-BenchmarkSelectTags/complex_markup/100000_tags/11.6M-8   	       5	 227873490 ns/op	 90800432 B/op	 1400041 allocs/op
-BenchmarkSelectTags/complex_markup/1000000_tags/120.6M-8 	       1	2402936519 ns/op	881045280 B/op	14000051 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/10_tags/1020B-8       	  100000	     18614 ns/op	     8117 B/op	     106 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/100_tags/10.4K-8      	   10000	    194201 ns/op	   155986 B/op	    1006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/1000_tags/108.8K-8    	    1000	   1725249 ns/op	   379632 B/op	   10006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/10000_tags/1.1M-8     	     100	  23956279 ns/op	 18179332 B/op	  100006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/100000_tags/11.6M-8   	      10	 184968462 ns/op	 38395632 B/op	 1000006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/1000000_tags/120.6M-8 	       1	1857636429 ns/op	383995632 B/op	10000006 allocs/op
+```
+
+### With Flatten Builder
+
+`htmlselector.SelectTags()` with a simple markup:
+
+```
+BenchmarkSelectTags/flatten_builder/simple_markup/10_tags/430B-8            	  200000	      6244 ns/op	     5971 B/op	      15 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/100_tags/4.4K-8           	   30000	     54042 ns/op	    21038 B/op	     105 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/1000_tags/45.7K-8         	    3000	    530844 ns/op	   191624 B/op	    1005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/10000_tags/476.3K-8       	     300	   5116874 ns/op	  1402546 B/op	   10005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/100000_tags/4.8M-8        	      20	  54404882 ns/op	 23420178 B/op	  100005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/1000000_tags/50.3M-8      	       2	 663629704 ns/op	284703000 B/op	 1000005 allocs/op
+```
+
+`htmlselector.SelectTags()` with a complex markup:
+
+```
+BenchmarkSelectTags/flatten_builder/complex_markup/10_tags/1020B-8          	  100000	     15029 ns/op	     11411 B/op	      46 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/100_tags/10.4K-8         	   10000	    150423 ns/op	     90183 B/op	     406 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/1000_tags/108.8K-8       	    1000	   1268568 ns/op	     74576 B/op	    4006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/10000_tags/1.1M-8        	     100	  19005918 ns/op	  10593772 B/op	   40006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/100000_tags/11.6M-8      	      10	 138218081 ns/op	   7442576 B/op	  400006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/1000000_tags/120.6M-8    	       1	2141494094 ns/op	1313346192 B/op	 4000007 allocs/op
 ```
 
 ## License

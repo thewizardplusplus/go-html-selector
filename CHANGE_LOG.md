@@ -11,6 +11,56 @@
   - optimize the `byteutils.Copy()` function;
   - optimize the `builders.StructuralBuilder.AddAttribute()` method.
 
+### Benchmarks
+
+#### With Structural Builder
+
+`htmlselector.SelectTags()` with a simple markup:
+
+```
+BenchmarkSelectTags/structural_builder/simple_markup/10_tags/430B-8         	  200000	     12572 ns/op	     8124 B/op	      35 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/100_tags/4.4K-8        	   20000	     93708 ns/op	    49167 B/op	     305 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/1000_tags/45.7K-8      	    3000	    716388 ns/op	   367374 B/op	    3005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/10000_tags/476.3K-8    	     300	   7021473 ns/op	  2772749 B/op	   30005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/100000_tags/4.8M-8     	      20	  59393679 ns/op	  8104370 B/op	  300005 allocs/op
+BenchmarkSelectTags/structural_builder/simple_markup/1000000_tags/50.3M-8   	       1	1166593360 ns/op	998999904 B/op	 3000006 allocs/op
+```
+
+`htmlselector.SelectTags()` with a complex markup:
+
+```
+BenchmarkSelectTags/structural_builder/complex_markup/10_tags/1020B-8       	  100000	     18614 ns/op	     8117 B/op	     106 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/100_tags/10.4K-8      	   10000	    194201 ns/op	   155986 B/op	    1006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/1000_tags/108.8K-8    	    1000	   1725249 ns/op	   379632 B/op	   10006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/10000_tags/1.1M-8     	     100	  23956279 ns/op	 18179332 B/op	  100006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/100000_tags/11.6M-8   	      10	 184968462 ns/op	 38395632 B/op	 1000006 allocs/op
+BenchmarkSelectTags/structural_builder/complex_markup/1000000_tags/120.6M-8 	       1	1857636429 ns/op	383995632 B/op	10000006 allocs/op
+```
+
+#### With Flatten Builder
+
+`htmlselector.SelectTags()` with a simple markup:
+
+```
+BenchmarkSelectTags/flatten_builder/simple_markup/10_tags/430B-8            	  200000	      6244 ns/op	     5971 B/op	      15 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/100_tags/4.4K-8           	   30000	     54042 ns/op	    21038 B/op	     105 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/1000_tags/45.7K-8         	    3000	    530844 ns/op	   191624 B/op	    1005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/10000_tags/476.3K-8       	     300	   5116874 ns/op	  1402546 B/op	   10005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/100000_tags/4.8M-8        	      20	  54404882 ns/op	 23420178 B/op	  100005 allocs/op
+BenchmarkSelectTags/flatten_builder/simple_markup/1000000_tags/50.3M-8      	       2	 663629704 ns/op	284703000 B/op	 1000005 allocs/op
+```
+
+`htmlselector.SelectTags()` with a complex markup:
+
+```
+BenchmarkSelectTags/flatten_builder/complex_markup/10_tags/1020B-8          	  100000	     15029 ns/op	     11411 B/op	      46 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/100_tags/10.4K-8         	   10000	    150423 ns/op	     90183 B/op	     406 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/1000_tags/108.8K-8       	    1000	   1268568 ns/op	     74576 B/op	    4006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/10000_tags/1.1M-8        	     100	  19005918 ns/op	  10593772 B/op	   40006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/100000_tags/11.6M-8      	      10	 138218081 ns/op	   7442576 B/op	  400006 allocs/op
+BenchmarkSelectTags/flatten_builder/complex_markup/1000000_tags/120.6M-8    	       1	2141494094 ns/op	1313346192 B/op	 4000007 allocs/op
+```
+
 ## [v1.3.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.3.1) (2020-07-30)
 
 - fix benchmarks.
