@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.4](https://github.com/thewizardplusplus/go-html-selector/tree/v1.4) (2020-07-30)
+
+- skipping empty attributes (i.e. with an empty value; optional);
+- representing a result:
+  - built-in builders:
+    - with collecting only values of HTML attributes;
+- optimizations:
+  - optimize the `htmlselector.SelectTags()` function;
+  - optimize the `byteutils.Copy()` function;
+  - optimize the `builders.StructuralBuilder.AddAttribute()` method.
+
 ## [v1.3.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.3.1) (2020-07-30)
 
 - fix benchmarks.
