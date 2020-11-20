@@ -27,8 +27,12 @@ func OptimizeFilters(
 ) OptimizedFilterGroup {
 	config := newOptionConfig(options)
 
+	universalTagAttributes := make(OptimizedAttributeFilterGroup)
+	for _, attribute := range filters[UniversalTag] {
+		universalTagAttributes[attribute] = struct{}{}
+	}
+
 	optimizedFilters := make(OptimizedFilterGroup)
-	var universalTagAttributes OptimizedAttributeFilterGroup
 	for tag, attributes := range filters {
 		if config.skipEmptyTags && len(attributes) == 0 {
 			continue
@@ -36,7 +40,7 @@ func OptimizeFilters(
 
 		optimizedAttributeFilters := make(OptimizedAttributeFilterGroup)
 		for _, attribute := range attributes {
-			if _, ok := universalTagAttributes[attribute]; ok {
+			if _, ok := universalTagAttributes[attribute]; ok && tag != UniversalTag {
 				continue
 			}
 
@@ -44,9 +48,6 @@ func OptimizeFilters(
 		}
 
 		optimizedFilters[tag] = optimizedAttributeFilters
-		if tag == UniversalTag {
-			universalTagAttributes = optimizedAttributeFilters
-		}
 	}
 
 	return optimizedFilters
