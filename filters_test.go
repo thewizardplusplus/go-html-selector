@@ -127,7 +127,7 @@ func TestOptimizeFilters(test *testing.T) {
 			},
 		},
 	} {
-		test.Run(data.name, func(t *testing.T) {
+		test.Run(data.name, func(test *testing.T) {
 			got := OptimizeFilters(data.args.filters, data.args.options...)
 
 			assert.Equal(test, data.want, got)
