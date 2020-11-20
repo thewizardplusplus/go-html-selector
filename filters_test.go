@@ -110,6 +110,22 @@ func TestOptimizeFilters(test *testing.T) {
 				"img": {"src": {}, "alt": {}},
 			},
 		},
+		{
+			name: "with the universal tag",
+			args: args{
+				filters: FilterGroup{
+					UniversalTag: {"title", "alt"},
+					"a":          {"href", "title"},
+					"img":        {"src", "alt"},
+				},
+				options: nil,
+			},
+			want: OptimizedFilterGroup{
+				UniversalTag: {"title": {}, "alt": {}},
+				"a":          {"href": {}},
+				"img":        {"src": {}},
+			},
+		},
 	} {
 		test.Run(data.name, func(t *testing.T) {
 			got := OptimizeFilters(data.args.filters, data.args.options...)

@@ -3,6 +3,11 @@ package htmlselector
 // TagName ...
 type TagName string
 
+// ...
+const (
+	UniversalTag TagName = "*"
+)
+
 // AttributeName ...
 type AttributeName string
 
@@ -23,6 +28,7 @@ func OptimizeFilters(
 	config := newOptionConfig(options)
 
 	optimizedFilters := make(OptimizedFilterGroup)
+	var universalTagAttributes OptimizedAttributeFilterGroup
 	for tag, attributes := range filters {
 		if config.skipEmptyTags && len(attributes) == 0 {
 			continue
@@ -30,10 +36,17 @@ func OptimizeFilters(
 
 		optimizedAttributeFilters := make(OptimizedAttributeFilterGroup)
 		for _, attribute := range attributes {
+			if _, ok := universalTagAttributes[attribute]; ok {
+				continue
+			}
+
 			optimizedAttributeFilters[attribute] = struct{}{}
 		}
 
 		optimizedFilters[tag] = optimizedAttributeFilters
+		if tag == UniversalTag {
+			universalTagAttributes = optimizedAttributeFilters
+		}
 	}
 
 	return optimizedFilters
