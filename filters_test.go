@@ -111,7 +111,7 @@ func TestOptimizeFilters(test *testing.T) {
 			},
 		},
 		{
-			name: "with the universal tag",
+			name: "with the universal tag/without destruction of a specific tag",
 			args: args{
 				filters: FilterGroup{
 					UniversalTag: {"title", "alt"},
@@ -124,6 +124,39 @@ func TestOptimizeFilters(test *testing.T) {
 				UniversalTag: {"title": {}, "alt": {}},
 				"a":          {"href": {}},
 				"img":        {"src": {}},
+			},
+		},
+		{
+			name: "with the universal tag/with destruction of a specific tag" +
+				"/without skipping",
+			args: args{
+				filters: FilterGroup{
+					UniversalTag: {"title", "alt", "src"},
+					"a":          {"href", "title"},
+					"img":        {"src", "alt"},
+				},
+				options: nil,
+			},
+			want: OptimizedFilterGroup{
+				UniversalTag: {"title": {}, "alt": {}, "src": {}},
+				"a":          {"href": {}},
+				"img":        {},
+			},
+		},
+		{
+			name: "with the universal tag/with destruction of a specific tag" +
+				"/with skipping",
+			args: args{
+				filters: FilterGroup{
+					UniversalTag: {"title", "alt", "src"},
+					"a":          {"href", "title"},
+					"img":        {"src", "alt"},
+				},
+				options: []Option{SkipEmptyTags()},
+			},
+			want: OptimizedFilterGroup{
+				UniversalTag: {"title": {}, "alt": {}, "src": {}},
+				"a":          {"href": {}},
 			},
 		},
 	} {
