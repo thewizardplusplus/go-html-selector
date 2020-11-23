@@ -8,6 +8,11 @@ const (
 	UniversalTag TagName = "*"
 )
 
+// ...
+var (
+	UniversalTagBytes = []byte(UniversalTag)
+)
+
 // AttributeName ...
 type AttributeName string
 

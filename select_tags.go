@@ -45,10 +45,14 @@ func selectTag(
 	builder Builder,
 	config OptionConfig,
 ) {
-	name, hasAttributes := tokenizer.TagName()
-	attributeFilters, ok := filters[TagName(byteutils.String(name))]
+	name, hasAttributes := UniversalTagBytes, true
+	attributeFilters, ok := filters[UniversalTag]
 	if !ok {
-		return
+		name, hasAttributes = tokenizer.TagName()
+		attributeFilters, ok = filters[TagName(byteutils.String(name))]
+		if !ok {
+			return
+		}
 	}
 
 	attributeCount :=
