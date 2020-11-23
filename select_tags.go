@@ -55,8 +55,14 @@ func selectTag(
 		}
 	}
 
-	attributeCount :=
-		selectAttributes(tokenizer, hasAttributes, attributeFilters, builder, config)
+	attributeCount := selectAttributes(
+		tokenizer,
+		hasAttributes,
+		attributeFilters,
+		nil,
+		builder,
+		config,
+	)
 	if config.skipEmptyTags && attributeCount == 0 {
 		return
 	}
@@ -68,6 +74,7 @@ func selectAttributes(
 	tokenizer *html.Tokenizer,
 	hasAttributes bool,
 	filters OptimizedAttributeFilterGroup,
+	additionalFilters OptimizedAttributeFilterGroup,
 	builder Builder,
 	config OptionConfig,
 ) (count int) {
@@ -75,8 +82,11 @@ func selectAttributes(
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = tokenizer.TagAttr()
-		if _, ok := filters[AttributeName(byteutils.String(name))]; !ok {
-			continue
+		filterName := AttributeName(byteutils.String(name))
+		if _, ok := filters[filterName]; !ok {
+			if _, ok := additionalFilters[filterName]; !ok {
+				continue
+			}
 		}
 		if config.skipEmptyAttributes && len(value) == 0 {
 			continue
