@@ -25,10 +25,11 @@ func SelectTags(
 	config := newOptionConfig(options)
 
 	tokenizer := html.NewTokenizer(reader)
+	universalTagAttributeFilters := filters[UniversalTag]
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			selectTag(tokenizer, filters, nil, builder, config)
+			selectTag(tokenizer, filters, universalTagAttributeFilters, builder, config)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return err
