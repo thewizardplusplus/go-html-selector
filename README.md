@@ -191,7 +191,6 @@ func main() {
 		reader,
 		filters,
 		&builder,
-		htmlselector.SkipEmptyTags(),
 		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
@@ -260,7 +259,6 @@ func main() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
-		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)

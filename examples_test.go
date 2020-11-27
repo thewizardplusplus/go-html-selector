@@ -112,7 +112,6 @@ func ExampleSelectTags_withFlattenBuilder() {
 		reader,
 		filters,
 		&builder,
-		htmlselector.SkipEmptyTags(),
 		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
@@ -166,7 +165,6 @@ func ExampleSelectTags_withUniversalTag() {
 		filters,
 		&builder,
 		htmlselector.SkipEmptyTags(),
-		htmlselector.SkipEmptyAttributes(),
 	)
 	if err != nil {
 		log.Fatal(err)
