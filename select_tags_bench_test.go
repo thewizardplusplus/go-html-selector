@@ -70,6 +70,28 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 					},
 				},
 			},
+			{
+				name: "universal tag",
+				args: args{
+					makeMarkup: func(tagCount int) string {
+						var markupParts []string
+						for tagIndex := 0; tagIndex < tagCount; tagIndex++ {
+							markupParts = append(markupParts, fmt.Sprintf(
+								`<p><a href="http://example.com/%[1]d" title="%[1]d">%[1]d</a></p>`+
+									`<p><img src="http://example.com/%[1]d" alt="%[1]d" /></p>`,
+								tagIndex,
+							))
+						}
+
+						return strings.Join(markupParts, "")
+					},
+					filters: OptimizedFilterGroup{
+						UniversalTag: {"title": {}, "alt": {}},
+						"a":          {"href": {}},
+						"img":        {"src": {}},
+					},
+				},
+			},
 		} {
 			for tagCount := 10; tagCount <= 1e6; tagCount *= 10 {
 				markup := data.args.makeMarkup(tagCount)
