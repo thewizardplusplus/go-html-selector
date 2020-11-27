@@ -459,6 +459,106 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with the universal tag/without skipping",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<a href="http://example.com/1" title="title #1">
+								<img src="http://example.com/1.1" alt="alt #1" />
+							</a>
+						</li>
+						<li>
+							<a href="http://example.com/2" title="title #2">
+								<img src="http://example.com/2.1" alt="alt #2" />
+							</a>
+						</li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{
+					UniversalTag: {"title": {}, "alt": {}},
+					"a":          {"href": {}},
+					"img":        {"src": {}},
+				},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("ul")).Once()
+					builder.On("AddTag", []byte("li")).Times(2)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.On("AddTag", []byte("img")).Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #1")).Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1.1")).
+						Once()
+					builder.On("AddAttribute", []byte("alt"), []byte("alt #1")).Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #2")).Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2.1")).
+						Once()
+					builder.On("AddAttribute", []byte("alt"), []byte("alt #2")).Once()
+
+					return builder
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/with the universal tag/with skipping",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<a href="http://example.com/1" title="title #1">
+								<img src="http://example.com/1.1" alt="alt #1" />
+							</a>
+						</li>
+						<li>
+							<a href="http://example.com/2" title="title #2">
+								<img src="http://example.com/2.1" alt="alt #2" />
+							</a>
+						</li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{
+					UniversalTag: {"title": {}, "alt": {}},
+					"a":          {"href": {}},
+					"img":        {"src": {}},
+				},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.On("AddTag", []byte("img")).Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #1")).Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/1.1")).
+						Once()
+					builder.On("AddAttribute", []byte("alt"), []byte("alt #1")).Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #2")).Once()
+					builder.
+						On("AddAttribute", []byte("src"), []byte("http://example.com/2.1")).
+						Once()
+					builder.On("AddAttribute", []byte("alt"), []byte("alt #2")).Once()
+
+					return builder
+				}(),
+				options: []Option{SkipEmptyTags()},
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "error",
 			args: args{
 				reader: iotest.TimeoutReader(strings.NewReader(`
