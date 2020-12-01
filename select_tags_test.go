@@ -476,9 +476,8 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{
-					UniversalTag: {"title": {}, "alt": {}},
+					UniversalTag: {"title": {}, "alt": {}, "src": {}},
 					"a":          {"href": {}},
-					"img":        {"src": {}},
 				},
 				builder: func() Builder {
 					builder := new(MockBuilder)
@@ -527,9 +526,8 @@ func TestSelectTags(test *testing.T) {
 					</ul>
 				`),
 				filters: OptimizedFilterGroup{
-					UniversalTag: {"title": {}, "alt": {}},
+					UniversalTag: {"title": {}, "alt": {}, "src": {}},
 					"a":          {"href": {}},
-					"img":        {"src": {}},
 				},
 				builder: func() Builder {
 					builder := new(MockBuilder)
