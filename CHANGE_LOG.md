@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.5](https://github.com/thewizardplusplus/go-html-selector/tree/v1.5) (2020-11-27)
+
+- filtering a result:
+  - support of the universal tag (`*`);
+- optimizations:
+  - removing duplicate attribute filters, if there are the same filters for the universal tag.
+
 ## [v1.4](https://github.com/thewizardplusplus/go-html-selector/tree/v1.4) (2020-07-30)
 
 - skipping empty attributes (i.e. with an empty value; optional);
