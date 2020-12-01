@@ -7,6 +7,34 @@
 - optimizations:
   - removing duplicate attribute filters, if there are the same filters for the universal tag.
 
+### Benchmarks
+
+#### With Structural Builder
+
+`htmlselector.SelectTags()` with the universal tag:
+
+```
+BenchmarkSelectTags/structural_builder/universal_tag/10_tags/1020B-8         	   50000	     25557 ns/op	    18370 B/op	     126 allocs/op
+BenchmarkSelectTags/structural_builder/universal_tag/100_tags/10.4K-8        	   10000	    311815 ns/op	   168108 B/op	    1206 allocs/op
+BenchmarkSelectTags/structural_builder/universal_tag/1000_tags/108.8K-8      	    1000	   2407620 ns/op	  1437633 B/op	   12006 allocs/op
+BenchmarkSelectTags/structural_builder/universal_tag/10000_tags/1.1M-8       	     100	  22065997 ns/op	 11180076 B/op	  120006 allocs/op
+BenchmarkSelectTags/structural_builder/universal_tag/100000_tags/11.6M-8     	      10	 445495615 ns/op	244945105 B/op	 1200006 allocs/op
+BenchmarkSelectTags/structural_builder/universal_tag/1000000_tags/120.6M-8   	       1	2307457875 ns/op	383996112 B/op	12000006 allocs/op
+```
+
+#### With Flatten Builder
+
+`htmlselector.SelectTags()` with the universal tag:
+
+```
+BenchmarkSelectTags/flatten_builder/universal_tag/10_tags/1020B-8            	  100000	     17471 ns/op	     9823 B/op	      46 allocs/op
+BenchmarkSelectTags/flatten_builder/universal_tag/100_tags/10.4K-8           	   10000	    140121 ns/op	    57790 B/op	     406 allocs/op
+BenchmarkSelectTags/flatten_builder/universal_tag/1000_tags/108.8K-8         	    1000	   1577272 ns/op	   802345 B/op	    4006 allocs/op
+BenchmarkSelectTags/flatten_builder/universal_tag/10000_tags/1.1M-8          	     100	  15151013 ns/op	  5776548 B/op	   40006 allocs/op
+BenchmarkSelectTags/flatten_builder/universal_tag/100000_tags/11.6M-8        	      10	 164593709 ns/op	 70617641 B/op	  400006 allocs/op
+BenchmarkSelectTags/flatten_builder/universal_tag/1000000_tags/120.6M-8      	       1	1620865858 ns/op	869134992 B/op	 4000007 allocs/op
+```
+
 ## [v1.4](https://github.com/thewizardplusplus/go-html-selector/tree/v1.4) (2020-07-30)
 
 - skipping empty attributes (i.e. with an empty value; optional);
