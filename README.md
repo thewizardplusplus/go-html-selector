@@ -15,7 +15,8 @@ The library that implements collecting specified HTML tags and their attributes 
 - options:
   - filters:
     - filtering a result:
-      - by specified HTML tags;
+      - by specified HTML tags:
+        - with support of the universal tag (`*`);
       - by specified HTML attributes;
     - friendly representation of filters:
       - for parsing from JSON;
@@ -29,7 +30,8 @@ The library that implements collecting specified HTML tags and their attributes 
     - with grouping HTML attributes by their tags;
     - with collecting only values of HTML attributes;
 - optimizations:
-  - of searching for the right one among filters;
+  - of searching for a right filter among others:
+    - with removing duplicate attribute filters, if there are the same filters for the universal tag;
   - of conversion from a byte slice to a string;
   - by the number:
     - of memory allocations;
