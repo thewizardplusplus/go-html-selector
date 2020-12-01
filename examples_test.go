@@ -154,8 +154,7 @@ func ExampleSelectTags_withUniversalTag() {
 	`)
 
 	filters := htmlselector.OptimizeFilters(htmlselector.FilterGroup{
-		htmlselector.UniversalTag: {"title"},
-		"a":                       {"href"},
+		htmlselector.UniversalTag: {"title", "href"},
 		"video":                   {"src", "poster"},
 	})
 
