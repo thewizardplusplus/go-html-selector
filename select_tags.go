@@ -1,6 +1,7 @@
 package htmlselector
 
 import (
+	"bytes"
 	"io"
 
 	byteutils "github.com/thewizardplusplus/go-html-selector/byte-utils"
@@ -50,6 +51,12 @@ func SelectTags(
 			}
 
 			text := tokenizer.Raw()
+			// bytes.TrimSpace doesn't make new allocations and also has the optimization
+			// for an ASCII only text, so it's optimal to use it
+			if config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
+				continue
+			}
+
 			textBuilder.AddText(text)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
