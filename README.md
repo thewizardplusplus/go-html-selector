@@ -5,13 +5,14 @@
 [![Build Status](https://travis-ci.org/thewizardplusplus/go-html-selector.svg?branch=master)](https://travis-ci.org/thewizardplusplus/go-html-selector)
 [![codecov](https://codecov.io/gh/thewizardplusplus/go-html-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/thewizardplusplus/go-html-selector)
 
-The library that implements collecting specified HTML tags and their attributes from an HTML document.
+The library that implements collecting text, specified HTML tags, and their attributes from an HTML document.
 
 ## Features
 
 - collecting from an HTML document:
   - HTML tags;
   - HTML attributes;
+  - text (optional);
 - options:
   - filters:
     - filtering a result:
@@ -24,11 +25,14 @@ The library that implements collecting specified HTML tags and their attributes 
   - skipping empty entities (separately optional):
     - tags without attributes;
     - attributes with an empty value;
+    - whitespace-only text;
 - representing a result:
   - using the builder interface for building a result;
   - built-in builders:
     - with grouping HTML attributes by their tags;
     - with collecting only values of HTML attributes;
+    - with collecting only text:
+      - with support of merging with other builders;
 - optimizations:
   - of searching for a right filter among others:
     - with removing duplicate attribute filters, if there are the same filters for the universal tag;
