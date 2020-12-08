@@ -39,10 +39,18 @@ func SelectTags(
 
 	tokenizer := html.NewTokenizer(reader)
 	universalTagAttributeFilters := filters[UniversalTag]
+	textBuilder, hasTextBuilder := builder.(TextBuilder)
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			selectTag(tokenizer, filters, universalTagAttributeFilters, builder, config)
+		case html.TextToken:
+			if !hasTextBuilder {
+				continue
+			}
+
+			text := tokenizer.Raw()
+			textBuilder.AddText(text)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return err
