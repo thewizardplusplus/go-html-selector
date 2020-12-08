@@ -40,24 +40,15 @@ func SelectTags(
 
 	tokenizer := html.NewTokenizer(reader)
 	universalTagAttributeFilters := filters[UniversalTag]
-	textBuilder, hasTextBuilder := builder.(TextBuilder)
+	// use the special form of a type assertion to avoid panic; a nil result
+	// is processed separately below
+	textBuilder, _ := builder.(TextBuilder)
 	for {
 		switch tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			selectTag(tokenizer, filters, universalTagAttributeFilters, builder, config)
 		case html.TextToken:
-			if !hasTextBuilder {
-				continue
-			}
-
-			text := tokenizer.Raw()
-			// bytes.TrimSpace doesn't make new allocations and also has the optimization
-			// for an ASCII only text, so it's optimal to use it
-			if config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
-				continue
-			}
-
-			textBuilder.AddText(text)
+			selectText(tokenizer, textBuilder, config)
 		case html.ErrorToken:
 			if err := tokenizer.Err(); err != io.EOF {
 				return err
@@ -123,4 +114,23 @@ func selectAttributes(
 	}
 
 	return count
+}
+
+func selectText(
+	tokenizer *html.Tokenizer,
+	textBuilder TextBuilder,
+	config OptionConfig,
+) {
+	if textBuilder == nil {
+		return
+	}
+
+	text := tokenizer.Raw()
+	// bytes.TrimSpace doesn't make new allocations and also has the optimization
+	// for an ASCII only text, so it's optimal to use it
+	if config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
+		return
+	}
+
+	textBuilder.AddText(text)
 }
