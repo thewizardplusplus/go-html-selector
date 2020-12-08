@@ -22,6 +22,12 @@ type TextBuilder interface {
 	AddText(text []byte)
 }
 
+// MultiBuilder ...
+type MultiBuilder struct {
+	Builder
+	TextBuilder
+}
+
 // SelectTags ...
 func SelectTags(
 	reader io.Reader,
