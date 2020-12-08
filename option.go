@@ -4,6 +4,7 @@ package htmlselector
 type OptionConfig struct {
 	skipEmptyTags       bool
 	skipEmptyAttributes bool
+	skipEmptyText       bool
 }
 
 // Option ...
@@ -20,6 +21,13 @@ func SkipEmptyTags() Option {
 func SkipEmptyAttributes() Option {
 	return func(config *OptionConfig) {
 		config.skipEmptyAttributes = true
+	}
+}
+
+// SkipEmptyText ...
+func SkipEmptyText() Option {
+	return func(config *OptionConfig) {
+		config.skipEmptyText = true
 	}
 }
 
