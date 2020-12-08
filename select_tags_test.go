@@ -557,6 +557,46 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with a text builder",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>link #1: <a href="http://example.com/1">one</a></li>
+						<li>link #2: <a href="http://example.com/2">two</a></li>
+						<li>link #3: <a href="http://example.com/3"></a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(3)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/3")).
+						Once()
+
+					textBuilder := new(MockTextBuilder)
+					textBuilder.On("AddText", []byte("\n"+strings.Repeat("\t", 4))).Once()
+					textBuilder.On("AddText", []byte("\n"+strings.Repeat("\t", 5))).Times(2)
+					textBuilder.On("AddText", []byte("\n"+strings.Repeat("\t", 6))).Times(3)
+					textBuilder.On("AddText", []byte("link #1: ")).Once()
+					textBuilder.On("AddText", []byte("one")).Once()
+					textBuilder.On("AddText", []byte("link #2: ")).Once()
+					textBuilder.On("AddText", []byte("two")).Once()
+					textBuilder.On("AddText", []byte("link #3: ")).Once()
+
+					return MultiBuilder{builder, textBuilder}
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "error",
 			args: args{
 				reader: iotest.TimeoutReader(strings.NewReader(`
@@ -591,7 +631,14 @@ func TestSelectTags(test *testing.T) {
 				data.args.options...,
 			)
 
-			mock.AssertExpectationsForObjects(test, data.args.builder)
+			var builders []interface{}
+			if multiBuilder, ok := data.args.builder.(MultiBuilder); ok {
+				builders = []interface{}{multiBuilder.Builder, multiBuilder.TextBuilder}
+			} else {
+				builders = []interface{}{data.args.builder}
+			}
+			mock.AssertExpectationsForObjects(test, builders...)
+
 			data.wantErr(test, gotErr)
 		})
 	}
