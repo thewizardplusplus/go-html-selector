@@ -15,6 +15,11 @@ type Builder interface {
 	AddAttribute(name []byte, value []byte)
 }
 
+// TextBuilder ...
+type TextBuilder interface {
+	AddText(text []byte)
+}
+
 // SelectTags ...
 func SelectTags(
 	reader io.Reader,
