@@ -290,6 +290,94 @@ func main() {
 }
 ```
 
+`htmlselector.SelectTags()` with the text builder:
+
+```go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"log"
+	"strings"
+
+	htmlselector "github.com/thewizardplusplus/go-html-selector"
+	"github.com/thewizardplusplus/go-html-selector/builders"
+)
+
+func main() {
+	reader := strings.NewReader(`
+		<ul>
+			<li>
+				link #1: <a href="http://example.com/1">one</a>
+				<video
+					src="http://example.com/1.1"
+					poster="http://example.com/1.2">
+					Unable to embed video #1.
+				</video>
+			</li>
+			<li>
+				link #2: <a href="http://example.com/2">two</a>
+				<video
+					src="http://example.com/2.1"
+					poster="http://example.com/2.2">
+					Unable to embed video #2.
+				</video>
+			</li>
+		</ul>
+	`)
+
+	filters := htmlselector.OptimizeFilters(htmlselector.FilterGroup{
+		"a":     {"href"},
+		"video": {"src", "poster"},
+	})
+
+	var builder builders.StructuralBuilder
+	var textBuilder builders.TextBuilder
+	err := htmlselector.SelectTags(
+		reader,
+		filters,
+		htmlselector.MultiBuilder{Builder: &builder, TextBuilder: &textBuilder},
+		htmlselector.SkipEmptyText(),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, tag := range builder.Tags() {
+		fmt.Printf("<%s>:\n", tag.Name)
+		for _, attribute := range tag.Attributes {
+			fmt.Printf("  %s=%q\n", attribute.Name, attribute.Value)
+		}
+	}
+
+	fmt.Println("text parts:")
+	for _, textPart := range textBuilder.TextParts() {
+		textPart = bytes.TrimSpace(textPart)
+		fmt.Printf("  %q\n", textPart)
+	}
+
+	// Output:
+	// <a>:
+	//   href="http://example.com/1"
+	// <video>:
+	//   src="http://example.com/1.1"
+	//   poster="http://example.com/1.2"
+	// <a>:
+	//   href="http://example.com/2"
+	// <video>:
+	//   src="http://example.com/2.1"
+	//   poster="http://example.com/2.2"
+	// text parts:
+	//   "link #1:"
+	//   "one"
+	//   "Unable to embed video #1."
+	//   "link #2:"
+	//   "two"
+	//   "Unable to embed video #2."
+}
+```
+
 ## Benchmarks
 
 ### With Structural Builder
