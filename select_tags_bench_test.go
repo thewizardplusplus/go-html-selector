@@ -27,6 +27,13 @@ func BenchmarkSelectTags(benchmark *testing.B) {
 			name:           "flatten builder",
 			implementation: new(builders.FlattenBuilder),
 		},
+		{
+			name: "text builder",
+			implementation: MultiBuilder{
+				Builder:     new(builders.StructuralBuilder),
+				TextBuilder: new(builders.TextBuilder),
+			},
+		},
 	} {
 		for _, data := range []struct {
 			name string
