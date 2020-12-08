@@ -15,6 +15,8 @@ type Builder interface {
 	AddAttribute(name []byte, value []byte)
 }
 
+//go:generate mockery -name=TextBuilder -inpkg -case=underscore -testonly
+
 // TextBuilder ...
 type TextBuilder interface {
 	AddText(text []byte)
