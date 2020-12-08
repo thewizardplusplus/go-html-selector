@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.6](https://github.com/thewizardplusplus/go-html-selector/tree/v1.6) (2020-12-08)
+
+- collecting from an HTML document:
+  - text (optional);
+- skipping whitespace-only text (optional);
+- representing a result:
+  - built-in builders:
+    - with collecting only text:
+      - with support of merging with other builders.
+
 ## [v1.5](https://github.com/thewizardplusplus/go-html-selector/tree/v1.5) (2020-11-27)
 
 - filtering a result:
