@@ -10,6 +10,43 @@
     - with collecting only text:
       - with support of merging with other builders.
 
+### Benchmarks
+
+#### With Structural & Text Builders
+
+`htmlselector.SelectTags()` with a simple markup:
+
+```
+BenchmarkSelectTags/text_builder/simple_markup/10_tags/430B-8         	  122985	     10339 ns/op	     9466 B/op	      45 allocs/op
+BenchmarkSelectTags/text_builder/simple_markup/100_tags/4.4K-8        	   15040	     78519 ns/op	    48475 B/op	     405 allocs/op
+BenchmarkSelectTags/text_builder/simple_markup/1000_tags/45.7K-8      	    1990	    813642 ns/op	   510223 B/op	    4005 allocs/op
+BenchmarkSelectTags/text_builder/simple_markup/10000_tags/476.3K-8    	     160	   6728975 ns/op	  3817896 B/op	   40005 allocs/op
+BenchmarkSelectTags/text_builder/simple_markup/100000_tags/4.8M-8     	      19	  75982499 ns/op	 56745964 B/op	  400005 allocs/op
+BenchmarkSelectTags/text_builder/simple_markup/1000000_tags/50.3M-8   	       2	 664071080 ns/op	290158432 B/op	 4000005 allocs/op
+```
+
+`htmlselector.SelectTags()` with a complex markup:
+
+```
+BenchmarkSelectTags/text_builder/complex_markup/10_tags/1020B-8       	   68089	     20964 ns/op	    21599 B/op	     116 allocs/op
+BenchmarkSelectTags/text_builder/complex_markup/100_tags/10.4K-8      	    7014	    167202 ns/op	    41712 B/op	    1106 allocs/op
+BenchmarkSelectTags/text_builder/complex_markup/1000_tags/108.8K-8    	     717	   1663950 ns/op	   387312 B/op	   11006 allocs/op
+BenchmarkSelectTags/text_builder/complex_markup/10000_tags/1.1M-8     	      69	  23245678 ns/op	 27798263 B/op	  110006 allocs/op
+BenchmarkSelectTags/text_builder/complex_markup/100000_tags/11.6M-8   	       6	 173781906 ns/op	 38403312 B/op	 1100006 allocs/op
+BenchmarkSelectTags/text_builder/complex_markup/1000000_tags/120.6M-8 	       1	1740418254 ns/op	384003328 B/op	11000006 allocs/op
+```
+
+`htmlselector.SelectTags()` with the universal tag:
+
+```
+BenchmarkSelectTags/text_builder/universal_tag/10_tags/1020B-8        	   61375	     19060 ns/op	     8168 B/op	     136 allocs/op
+BenchmarkSelectTags/text_builder/universal_tag/100_tags/10.4K-8       	    6638	    258572 ns/op	   407046 B/op	    1306 allocs/op
+BenchmarkSelectTags/text_builder/universal_tag/1000_tags/108.8K-8     	     615	   1775232 ns/op	   387360 B/op	   13006 allocs/op
+BenchmarkSelectTags/text_builder/universal_tag/10000_tags/1.1M-8      	      57	  27496277 ns/op	 43162804 B/op	  130006 allocs/op
+BenchmarkSelectTags/text_builder/universal_tag/100000_tags/11.6M-8    	       6	 187202961 ns/op	 38403378 B/op	 1300006 allocs/op
+BenchmarkSelectTags/text_builder/universal_tag/1000000_tags/120.6M-8  	       1	1854043284 ns/op	384003408 B/op	13000006 allocs/op
+```
+
 ## [v1.5](https://github.com/thewizardplusplus/go-html-selector/tree/v1.5) (2020-11-27)
 
 - filtering a result:
