@@ -1,6 +1,7 @@
 package htmlselector
 
 import (
+	"bytes"
 	"io"
 
 	byteutils "github.com/thewizardplusplus/go-html-selector/byte-utils"
@@ -70,4 +71,22 @@ func (selector selector) selectAttributes(
 	}
 
 	return count
+}
+
+func (selector selector) selectText(
+	textBuilder TextBuilder,
+	config OptionConfig,
+) {
+	if textBuilder == nil {
+		return
+	}
+
+	text := selector.tokenizer.Raw()
+	// bytes.TrimSpace doesn't make new allocations and also has the optimization
+	// for an ASCII-only text, so it's optimal to use it
+	if config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
+		return
+	}
+
+	textBuilder.AddText(text)
 }
