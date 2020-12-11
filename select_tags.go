@@ -37,7 +37,7 @@ func SelectTags(
 	selector := newSelector(reader, builder, options...)
 	universalTagAttributeFilters := filters[UniversalTag]
 	for {
-		switch selector.tokenizer.Next() {
+		switch selector.nextToken() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			selector.selectTag(filters, universalTagAttributeFilters)
 		case html.TextToken:

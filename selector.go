@@ -34,6 +34,10 @@ func newSelector(
 	}
 }
 
+func (selector selector) nextToken() html.TokenType {
+	return selector.tokenizer.Next()
+}
+
 func (selector selector) error() error {
 	err := selector.tokenizer.Err()
 	if err == io.EOF {
