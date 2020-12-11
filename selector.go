@@ -10,19 +10,20 @@ import (
 
 type selector struct {
 	tokenizer *html.Tokenizer
+	builder   Builder
 }
 
-func newSelector(reader io.Reader) selector {
+func newSelector(reader io.Reader, builder Builder) selector {
 	tokenizer := html.NewTokenizer(reader)
 	return selector{
 		tokenizer: tokenizer,
+		builder:   builder,
 	}
 }
 
 func (selector selector) selectTag(
 	filters OptimizedFilterGroup,
 	additionalAttributeFilters OptimizedAttributeFilterGroup,
-	builder Builder,
 	config OptionConfig,
 ) {
 	name, hasAttributes := selector.tokenizer.TagName()
@@ -35,21 +36,19 @@ func (selector selector) selectTag(
 		hasAttributes,
 		attributeFilters,
 		additionalAttributeFilters,
-		builder,
 		config,
 	)
 	if config.skipEmptyTags && attributeCount == 0 {
 		return
 	}
 
-	builder.AddTag(name)
+	selector.builder.AddTag(name)
 }
 
 func (selector selector) selectAttributes(
 	hasAttributes bool,
 	filters OptimizedAttributeFilterGroup,
 	additionalFilters OptimizedAttributeFilterGroup,
-	builder Builder,
 	config OptionConfig,
 ) (count int) {
 	hasNext := hasAttributes
@@ -66,7 +65,7 @@ func (selector selector) selectAttributes(
 			continue
 		}
 
-		builder.AddAttribute(name, value)
+		selector.builder.AddAttribute(name, value)
 		count++
 	}
 

@@ -36,7 +36,7 @@ func SelectTags(
 ) error {
 	config := newOptionConfig(options)
 
-	selector := newSelector(reader)
+	selector := newSelector(reader, builder)
 	universalTagAttributeFilters := filters[UniversalTag]
 	// use the special form of a type assertion to avoid panic; a nil result
 	// is processed separately below
@@ -44,7 +44,7 @@ func SelectTags(
 	for {
 		switch selector.tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			selector.selectTag(filters, universalTagAttributeFilters, builder, config)
+			selector.selectTag(filters, universalTagAttributeFilters, config)
 		case html.TextToken:
 			selector.selectText(textBuilder, config)
 		case html.ErrorToken:
