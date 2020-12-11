@@ -34,16 +34,14 @@ func SelectTags(
 	builder Builder,
 	options ...Option,
 ) error {
-	config := newOptionConfig(options)
-
-	selector := newSelector(reader, builder)
+	selector := newSelector(reader, builder, options...)
 	universalTagAttributeFilters := filters[UniversalTag]
 	for {
 		switch selector.tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
-			selector.selectTag(filters, universalTagAttributeFilters, config)
+			selector.selectTag(filters, universalTagAttributeFilters)
 		case html.TextToken:
-			selector.selectText(config)
+			selector.selectText()
 		case html.ErrorToken:
 			if err := selector.tokenizer.Err(); err != io.EOF {
 				return err

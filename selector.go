@@ -9,17 +9,25 @@ import (
 )
 
 type selector struct {
+	config      OptionConfig
 	tokenizer   *html.Tokenizer
 	builder     Builder
 	textBuilder TextBuilder
 }
 
-func newSelector(reader io.Reader, builder Builder) selector {
+func newSelector(
+	reader io.Reader,
+	builder Builder,
+	options ...Option,
+) selector {
+	config := newOptionConfig(options)
+
 	tokenizer := html.NewTokenizer(reader)
 	// use the special form of a type assertion to avoid panic; a nil result
 	// is processed separately below
 	textBuilder, _ := builder.(TextBuilder)
 	return selector{
+		config:      config,
 		tokenizer:   tokenizer,
 		builder:     builder,
 		textBuilder: textBuilder,
@@ -29,7 +37,6 @@ func newSelector(reader io.Reader, builder Builder) selector {
 func (selector selector) selectTag(
 	filters OptimizedFilterGroup,
 	additionalAttributeFilters OptimizedAttributeFilterGroup,
-	config OptionConfig,
 ) {
 	name, hasAttributes := selector.tokenizer.TagName()
 	attributeFilters, ok := filters[TagName(byteutils.String(name))]
@@ -41,9 +48,8 @@ func (selector selector) selectTag(
 		hasAttributes,
 		attributeFilters,
 		additionalAttributeFilters,
-		config,
 	)
-	if config.skipEmptyTags && attributeCount == 0 {
+	if selector.config.skipEmptyTags && attributeCount == 0 {
 		return
 	}
 
@@ -54,7 +60,6 @@ func (selector selector) selectAttributes(
 	hasAttributes bool,
 	filters OptimizedAttributeFilterGroup,
 	additionalFilters OptimizedAttributeFilterGroup,
-	config OptionConfig,
 ) (count int) {
 	hasNext := hasAttributes
 	for hasNext {
@@ -66,7 +71,7 @@ func (selector selector) selectAttributes(
 				continue
 			}
 		}
-		if config.skipEmptyAttributes && len(value) == 0 {
+		if selector.config.skipEmptyAttributes && len(value) == 0 {
 			continue
 		}
 
@@ -77,7 +82,7 @@ func (selector selector) selectAttributes(
 	return count
 }
 
-func (selector selector) selectText(config OptionConfig) {
+func (selector selector) selectText() {
 	if selector.textBuilder == nil {
 		return
 	}
@@ -85,7 +90,7 @@ func (selector selector) selectText(config OptionConfig) {
 	text := selector.tokenizer.Raw()
 	// bytes.TrimSpace doesn't make new allocations and also has the optimization
 	// for an ASCII-only text, so it's optimal to use it
-	if config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
+	if selector.config.skipEmptyText && len(bytes.TrimSpace(text)) == 0 {
 		return
 	}
 
