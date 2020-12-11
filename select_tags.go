@@ -38,15 +38,12 @@ func SelectTags(
 
 	selector := newSelector(reader, builder)
 	universalTagAttributeFilters := filters[UniversalTag]
-	// use the special form of a type assertion to avoid panic; a nil result
-	// is processed separately below
-	textBuilder, _ := builder.(TextBuilder)
 	for {
 		switch selector.tokenizer.Next() {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			selector.selectTag(filters, universalTagAttributeFilters, config)
 		case html.TextToken:
-			selector.selectText(textBuilder, config)
+			selector.selectText(config)
 		case html.ErrorToken:
 			if err := selector.tokenizer.Err(); err != io.EOF {
 				return err

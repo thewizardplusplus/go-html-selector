@@ -9,15 +9,20 @@ import (
 )
 
 type selector struct {
-	tokenizer *html.Tokenizer
-	builder   Builder
+	tokenizer   *html.Tokenizer
+	builder     Builder
+	textBuilder TextBuilder
 }
 
 func newSelector(reader io.Reader, builder Builder) selector {
 	tokenizer := html.NewTokenizer(reader)
+	// use the special form of a type assertion to avoid panic; a nil result
+	// is processed separately below
+	textBuilder, _ := builder.(TextBuilder)
 	return selector{
-		tokenizer: tokenizer,
-		builder:   builder,
+		tokenizer:   tokenizer,
+		builder:     builder,
+		textBuilder: textBuilder,
 	}
 }
 
@@ -72,11 +77,8 @@ func (selector selector) selectAttributes(
 	return count
 }
 
-func (selector selector) selectText(
-	textBuilder TextBuilder,
-	config OptionConfig,
-) {
-	if textBuilder == nil {
+func (selector selector) selectText(config OptionConfig) {
+	if selector.textBuilder == nil {
 		return
 	}
 
@@ -87,5 +89,5 @@ func (selector selector) selectText(
 		return
 	}
 
-	textBuilder.AddText(text)
+	selector.textBuilder.AddText(text)
 }
