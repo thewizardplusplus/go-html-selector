@@ -43,11 +43,7 @@ func SelectTags(
 		case html.TextToken:
 			selector.selectText()
 		case html.ErrorToken:
-			if err := selector.tokenizer.Err(); err != io.EOF {
-				return err
-			}
-
-			return nil
+			return selector.error()
 		}
 	}
 }

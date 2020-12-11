@@ -34,6 +34,15 @@ func newSelector(
 	}
 }
 
+func (selector selector) error() error {
+	err := selector.tokenizer.Err()
+	if err == io.EOF {
+		return nil
+	}
+
+	return err
+}
+
 func (selector selector) selectTag(
 	filters OptimizedFilterGroup,
 	additionalAttributeFilters OptimizedAttributeFilterGroup,
