@@ -30,8 +30,7 @@ func (selector selector) selectTag(
 		return
 	}
 
-	attributeCount := selectAttributes(
-		selector.tokenizer,
+	attributeCount := selector.selectAttributes(
 		hasAttributes,
 		attributeFilters,
 		additionalAttributeFilters,
@@ -43,4 +42,32 @@ func (selector selector) selectTag(
 	}
 
 	builder.AddTag(name)
+}
+
+func (selector selector) selectAttributes(
+	hasAttributes bool,
+	filters OptimizedAttributeFilterGroup,
+	additionalFilters OptimizedAttributeFilterGroup,
+	builder Builder,
+	config OptionConfig,
+) (count int) {
+	hasNext := hasAttributes
+	for hasNext {
+		var name, value []byte
+		name, value, hasNext = selector.tokenizer.TagAttr()
+		filterName := AttributeName(byteutils.String(name))
+		if _, ok := filters[filterName]; !ok {
+			if _, ok := additionalFilters[filterName]; !ok {
+				continue
+			}
+		}
+		if config.skipEmptyAttributes && len(value) == 0 {
+			continue
+		}
+
+		builder.AddAttribute(name, value)
+		count++
+	}
+
+	return count
 }
