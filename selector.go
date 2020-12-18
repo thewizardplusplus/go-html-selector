@@ -71,16 +71,16 @@ func (selector selector) selectTag(
 
 func (selector selector) selectAttributes(
 	hasAttributes bool,
-	filters OptimizedAttributeFilterGroup,
-	additionalFilters OptimizedAttributeFilterGroup,
-) (count int) {
+	attributeFilters OptimizedAttributeFilterGroup,
+	additionalAttributeFilters OptimizedAttributeFilterGroup,
+) (attributeCount int) {
 	hasNext := hasAttributes
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = selector.tokenizer.TagAttr()
 		filterName := AttributeName(byteutils.String(name))
-		if _, ok := filters[filterName]; !ok {
-			if _, ok := additionalFilters[filterName]; !ok {
+		if _, ok := attributeFilters[filterName]; !ok {
+			if _, ok := additionalAttributeFilters[filterName]; !ok {
 				continue
 			}
 		}
@@ -89,10 +89,10 @@ func (selector selector) selectAttributes(
 		}
 
 		selector.builder.AddAttribute(name, value)
-		count++
+		attributeCount++
 	}
 
-	return count
+	return attributeCount
 }
 
 func (selector selector) selectText() {
