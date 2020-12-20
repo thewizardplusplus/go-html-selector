@@ -57,11 +57,13 @@ func (selector selector) selectTag(
 		return
 	}
 
-	attributeCount := selector.selectAttributes(
-		hasAttributes,
-		attributeFilters,
-		additionalAttributeFilters,
-	)
+	var attributeCount int
+	if hasAttributes {
+		attributeCount = selector.selectAttributes(
+			attributeFilters,
+			additionalAttributeFilters,
+		)
+	}
 	if selector.config.skipEmptyTags && attributeCount == 0 {
 		return
 	}
@@ -70,11 +72,10 @@ func (selector selector) selectTag(
 }
 
 func (selector selector) selectAttributes(
-	hasAttributes bool,
 	attributeFilters OptimizedAttributeFilterGroup,
 	additionalAttributeFilters OptimizedAttributeFilterGroup,
 ) (attributeCount int) {
-	hasNext := hasAttributes
+	hasNext := true
 	for hasNext {
 		var name, value []byte
 		name, value, hasNext = selector.tokenizer.TagAttr()
