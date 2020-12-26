@@ -634,6 +634,45 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with attributes overlapping between tags",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li>
+							<a class="class #1" href="http://example.com/1" title="title #1">
+								<img
+									class="class #1.1"
+									src="http://example.com/1.1"
+									title="title #1.1" />
+							</a>
+						</li>
+						<li>
+							<a class="class #2" href="http://example.com/2" title="title #2">
+								<img
+									class="class #2.1"
+									src="http://example.com/2.1"
+									title="title #2.1" />
+							</a>
+						</li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"class": {}}, "img": {"title": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.On("AddTag", []byte("img")).Times(2)
+					builder.On("AddAttribute", []byte("class"), []byte("class #1")).Once()
+					builder.On("AddAttribute", []byte("class"), []byte("class #2")).Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #1.1")).Once()
+					builder.On("AddAttribute", []byte("title"), []byte("title #2.1")).Once()
+
+					return builder
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "error",
 			args: args{
 				reader: iotest.TimeoutReader(strings.NewReader(`
