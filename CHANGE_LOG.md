@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.6.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.6.1) (2020-12-26)
+
+- improving tests:
+  - adding tests with attributes overlapping between tags for the `htmlselector.SelectTags()` function;
+- refactoring:
+  - extracting the `htmlselector.selector` structure;
+  - moving builders from the `htmlselector` package to a separate file.
+
 ## [v1.6](https://github.com/thewizardplusplus/go-html-selector/tree/v1.6) (2020-12-08)
 
 - collecting from an HTML document:
