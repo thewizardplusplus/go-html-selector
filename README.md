@@ -26,6 +26,7 @@ The library that implements collecting text, specified HTML tags, and their attr
     - tags without attributes;
     - attributes with an empty value;
     - whitespace-only text;
+  - support of selection terminating ahead of time (optional);
 - representing a result:
   - using the builder interface for building a result;
   - built-in builders:
@@ -33,6 +34,7 @@ The library that implements collecting text, specified HTML tags, and their attr
     - with collecting only values of HTML attributes;
     - with collecting only text:
       - with support of merging with other builders;
+    - support of merging any builder with a selection terminator;
 - optimizations:
   - of searching for a right filter among others:
     - with removing duplicate attribute filters, if there are the same filters for the universal tag;
