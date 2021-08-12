@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.7](https://github.com/thewizardplusplus/go-html-selector/tree/v1.7) (2021-08-12)
+
+- options:
+  - support of selection terminating ahead of time (optional);
+- representing a result:
+  - built-in builders:
+    - support of merging any builder with a selection terminator.
+
 ## [v1.6.1](https://github.com/thewizardplusplus/go-html-selector/tree/v1.6.1) (2020-12-26)
 
 - improving tests:
