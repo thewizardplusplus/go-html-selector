@@ -493,4 +493,4 @@ BenchmarkSelectTags/text_builder/universal_tag/1000000_tags/120.6M-8  	       1	
 
 The MIT License (MIT)
 
-Copyright &copy; 2020 thewizardplusplus
+Copyright &copy; 2020-2021 thewizardplusplus
