@@ -1,6 +1,6 @@
 package htmlselector
 
-//go:generate mockery -name=Builder -inpkg -case=underscore -testonly
+//go:generate mockery --name=Builder --inpackage --case=underscore --testonly
 
 // Builder ...
 type Builder interface {
@@ -8,7 +8,7 @@ type Builder interface {
 	AddAttribute(name []byte, value []byte)
 }
 
-//go:generate mockery -name=TextBuilder -inpkg -case=underscore -testonly
+//go:generate mockery --name=TextBuilder --inpackage --case=underscore --testonly
 
 // TextBuilder ...
 type TextBuilder interface {
