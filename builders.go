@@ -27,3 +27,9 @@ type MultiBuilder struct {
 type SelectionTerminator interface {
 	IsSelectionTerminated() bool
 }
+
+// TerminatedBuilder ...
+type TerminatedBuilder struct {
+	Builder
+	SelectionTerminator
+}
