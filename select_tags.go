@@ -15,6 +15,9 @@ func SelectTags(
 ) error {
 	selector := newSelector(reader, builder, options...)
 	universalTagAttributeFilters := filters[UniversalTag]
+	// use the special form of a type assertion to avoid panic; a nil result
+	// is processed separately below
+	selectionTerminator, _ := builder.(SelectionTerminator)
 	for {
 		switch selector.nextToken() {
 		case html.StartTagToken, html.SelfClosingTagToken:
@@ -23,6 +26,10 @@ func SelectTags(
 			selector.selectText()
 		case html.ErrorToken:
 			return selector.error()
+		}
+
+		if selectionTerminator != nil && selectionTerminator.IsSelectionTerminated() {
+			return nil
 		}
 	}
 }
