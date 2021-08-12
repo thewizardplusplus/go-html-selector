@@ -1,6 +1,7 @@
 package htmlselector
 
 import (
+	"bytes"
 	"io"
 	"strings"
 	"testing"
@@ -672,6 +673,89 @@ func TestSelectTags(test *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "success/with a selection terminator/without selection terminating",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="http://example.com/1">1</a></li>
+						<li><a href="http://example.com/2">2</a></li>
+						<li><a href="http://example.com/3">3</a></li>
+						<li><a href="http://example.com/4">4</a></li>
+						<li><a href="http://example.com/5">5</a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(5)
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/1")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/2")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/3")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/4")).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), []byte("http://example.com/5")).
+						Once()
+
+					selectionTerminator := new(MockSelectionTerminator)
+					selectionTerminator.On("IsSelectionTerminated").Return(false)
+
+					return TerminatedBuilder{builder, selectionTerminator}
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "success/with a selection terminator/with selection terminating",
+			args: args{
+				reader: strings.NewReader(`
+					<ul>
+						<li><a href="http://example.com/1">1</a></li>
+						<li><a href="http://example.com/2">2</a></li>
+						<li><a href="http://example.com/3">3</a></li>
+						<li><a href="http://example.com/4">4</a></li>
+						<li><a href="http://example.com/5">5</a></li>
+					</ul>
+				`),
+				filters: OptimizedFilterGroup{"a": {"href": {}}},
+				builder: func() Builder {
+					var tagCounter int
+
+					builder := new(MockBuilder)
+					builder.On("AddTag", []byte("a")).Times(2)
+					builder.
+						On("AddAttribute", []byte("href"), mock.MatchedBy(func(data []byte) bool {
+							defer func() { tagCounter++ }()
+							return bytes.Equal(data, []byte("http://example.com/1"))
+						})).
+						Once()
+					builder.
+						On("AddAttribute", []byte("href"), mock.MatchedBy(func(data []byte) bool {
+							defer func() { tagCounter++ }()
+							return bytes.Equal(data, []byte("http://example.com/2"))
+						})).
+						Once()
+
+					selectionTerminator := new(MockSelectionTerminator)
+					selectionTerminator.
+						On("IsSelectionTerminated").
+						Return(func() bool { return tagCounter >= 2 })
+
+					return TerminatedBuilder{builder, selectionTerminator}
+				}(),
+				options: nil,
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "error",
 			args: args{
 				reader: iotest.TimeoutReader(strings.NewReader(`
@@ -707,9 +791,15 @@ func TestSelectTags(test *testing.T) {
 			)
 
 			var builders []interface{}
-			if multiBuilder, ok := data.args.builder.(MultiBuilder); ok {
-				builders = []interface{}{multiBuilder.Builder, multiBuilder.TextBuilder}
-			} else {
+			switch builderGroup := data.args.builder.(type) {
+			case MultiBuilder:
+				builders = []interface{}{builderGroup.Builder, builderGroup.TextBuilder}
+			case TerminatedBuilder:
+				builders = []interface{}{
+					builderGroup.Builder,
+					builderGroup.SelectionTerminator,
+				}
+			default:
 				builders = []interface{}{data.args.builder}
 			}
 			mock.AssertExpectationsForObjects(test, builders...)
