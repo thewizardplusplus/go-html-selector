@@ -413,8 +413,7 @@ func TestSelectTags(test *testing.T) {
 				builder: func() Builder {
 					builder := new(MockBuilder)
 					builder.On("AddTag", []byte("a")).Times(2)
-					builder.On("AddAttribute", []byte("href"), []byte{}).Once()
-					builder.On("AddAttribute", []byte("href"), []byte{}).Once()
+					builder.On("AddAttribute", []byte("href"), []byte{}).Times(2)
 
 					return builder
 				}(),
