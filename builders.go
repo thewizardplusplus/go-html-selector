@@ -20,3 +20,8 @@ type MultiBuilder struct {
 	Builder
 	TextBuilder
 }
+
+// SelectionTerminator ...
+type SelectionTerminator interface {
+	IsSelectionTerminated() bool
+}
