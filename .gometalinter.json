@@ -2,5 +2,5 @@
   "Vendor": true,
   "Test": true,
   "EnableAll": true,
-  "Disable": ["dupl", "gocyclo"]
+  "Disable": ["dupl", "gocyclo", "maligned"]
 }
