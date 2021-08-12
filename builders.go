@@ -21,6 +21,8 @@ type MultiBuilder struct {
 	TextBuilder
 }
 
+//go:generate mockery --name=SelectionTerminator --inpackage --case=underscore --testonly
+
 // SelectionTerminator ...
 type SelectionTerminator interface {
 	IsSelectionTerminated() bool
